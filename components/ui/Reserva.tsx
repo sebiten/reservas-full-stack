@@ -8,26 +8,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-import { horarios } from "@/lib/constantes";
+import { horarios, serviciosOdontologia } from "@/lib/constantes";
 import { obtenerReservas, subirReserva } from "@/app/perfil/action";
+import { createClient } from "@/utils/supabase/client";
 
 // Tipo para los datos de la reserva
 export interface Reserva {
   date: Date;
   hour: string;
   name: string;
-  email: string;
   phone: string;
+  service: string;
 }
 
-export default function Reservas() {
+export default function ReservasOdontologia() {
+  const supabase = createClient();
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [hour, setHour] = useState<string>("");
-  // const [disabledDates, setDisabledDates] = useState<Date[]>([]);
+  const [service, setService] = useState<string>("");
   const [disabledHours, setDisabledHours] = useState<string[]>([]);
 
   // Obtener reservas para deshabilitar fechas y horarios
@@ -37,12 +37,10 @@ export default function Reservas() {
         const reservas: Reserva[] = await obtenerReservas();
         if (!reservas || reservas.length === 0) return;
 
-        // Deshabilitar horarios de la fecha seleccionada
         if (date) {
           const horariosReservados = reservas
             .filter((reserva) => {
               const reservaDate = new Date(reserva.date);
-              // Comparar solo la fecha sin la hora
               return (
                 reservaDate.toISOString().split("T")[0] ===
                 date.toISOString().split("T")[0]
@@ -61,17 +59,40 @@ export default function Reservas() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const response = await subirReserva({
-      date: date!,
-      name,
-      email,
-      phone,
-      hour,
-    });
-    if (response.success) {
-      alert("Reserva creada exitosamente.");
-    } else {
-      alert(`Error al crear reserva: ${response.message}`);
+
+    try {
+      // Obtener el email del usuario autenticado
+      const { data, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error("Error al obtener el usuario:", error);
+        alert("No se pudo obtener el email del usuario.");
+        return;
+      }
+
+      const email = data?.user?.email;
+      if (!email) {
+        alert("Usuario no autenticado. Por favor, inicia sesión.");
+        return;
+      }
+
+      // Subir la reserva con los datos y el email del usuario
+      const response = await subirReserva({
+        date: date!,
+        name,
+        email,
+        phone,
+        hour,
+        service,
+      });
+
+      if (response.success) {
+        alert("Reserva creada exitosamente.");
+      } else {
+        alert(`Error al crear reserva: ${response.message}`);
+      }
+    } catch (error) {
+      console.error("Error al enviar la reserva:", error);
+      alert("Hubo un error al procesar la reserva.");
     }
   };
 
@@ -84,26 +105,20 @@ export default function Reservas() {
         className="rounded-md border"
       />
       <form onSubmit={handleSubmit} className="mt-4 space-y-4 w-full max-w-md">
-        <label
-          htmlFor="selectedDate"
-          className="block text-sm font-medium text-gray-700"
-        >
+        <label htmlFor="selectedDate" className="block text-sm font-medium text-gray-700">
           Fecha seleccionada:
         </label>
         <input
           type="text"
           id="selectedDate"
           name="selectedDate"
-          value={date ? date.toISOString().split("T")[0] : ""} // Formato 'YYYY-MM-DD'
+          value={date ? date.toISOString().split("T")[0] : ""}
           readOnly
           className="mt-1 p-2 border rounded-md w-full"
         />
         <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Nombre:
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            Nombre del paciente:
           </label>
           <input
             type="text"
@@ -116,27 +131,7 @@ export default function Reservas() {
           />
         </div>
         <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Email / Obra social:
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 p-2 border rounded-md w-full"
-            required
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="phone"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
             Teléfono:
           </label>
           <input
@@ -149,9 +144,26 @@ export default function Reservas() {
             required
           />
         </div>
+        <div>
+          <label htmlFor="service" className="block text-sm font-medium text-gray-700">
+            Servicio odontológico:
+          </label>
+          <Select onValueChange={(valor) => setService(valor)}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Selecciona un servicio" />
+            </SelectTrigger>
+            <SelectContent>
+              {serviciosOdontologia.map((servicio: string) => (
+                <SelectItem value={servicio} key={servicio}>
+                  {servicio}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         <Select onValueChange={(valor) => setHour(valor)}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Horarios" />
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Selecciona un horario" />
           </SelectTrigger>
           <SelectContent>
             {horarios.map((horario: any) => (
@@ -165,10 +177,7 @@ export default function Reservas() {
             ))}
           </SelectContent>
         </Select>
-        <button
-          type="submit"
-          className="mt-4 p-2 bg-blue-500 text-white rounded-md"
-        >
+        <button type="submit" className="mt-4 p-2 bg-blue-500 text-white rounded-md">
           Reservar
         </button>
       </form>

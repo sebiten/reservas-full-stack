@@ -9,3 +9,10 @@ export const horarios = [
   "18:30",
   "19:00",
 ];
+export const serviciosOdontologia = [
+  "Consulta General",
+  "Limpieza Dental",
+  "Blanqueamiento",
+  "Ortodoncia",
+  "Endodoncia",
+];
