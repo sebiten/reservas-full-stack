@@ -97,28 +97,42 @@ export default function ReservasOdontologia() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <Calendar
-        mode="single"
-        selected={date}
-        onSelect={setDate}
-        className="rounded-md border"
-      />
-      <form onSubmit={handleSubmit} className="mt-4 space-y-4 w-full max-w-md">
-        <label htmlFor="selectedDate" className="block text-sm font-medium text-gray-700">
-          Fecha seleccionada:
-        </label>
-        <input
-          type="text"
-          id="selectedDate"
-          name="selectedDate"
-          value={date ? date.toISOString().split("T")[0] : ""}
-          readOnly
-          className="mt-1 p-2 border rounded-md w-full"
+    <div className="flex flex-col items-center justify-center py-8 px-4 sm:px-6 lg:px-8">
+    <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+      Reserva tu turno odontológico
+    </h1>
+
+    {/* Contenedor horizontal */}
+    <div className="flex flex-col lg:flex-row items-start justify-center gap-8 w-full max-w-4xl">
+      {/* Calendario */}
+      <div className="w-full lg:w-1/2">
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={setDate}
+          className="rounded-lg border shadow-sm"
         />
+      </div>
+
+      {/* Formulario */}
+      <form onSubmit={handleSubmit} className="w-full lg:w-1/2 space-y-6 bg-white p-6 rounded-lg shadow-lg">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-            Nombre del paciente:
+          <label htmlFor="selectedDate" className="block text-sm font-medium text-gray-800">
+            Fecha seleccionada
+          </label>
+          <input
+            type="text"
+            id="selectedDate"
+            name="selectedDate"
+            value={date ? date.toISOString().split("T")[0] : ""}
+            readOnly
+            className="mt-2 p-3 border rounded-lg w-full bg-gray-100 text-gray-700"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-800">
+            Nombre del paciente
           </label>
           <input
             type="text"
@@ -126,13 +140,15 @@ export default function ReservasOdontologia() {
             name="name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="mt-1 p-2 border rounded-md w-full"
+            placeholder="Ingrese su nombre completo"
+            className="mt-2 p-3 border rounded-lg w-full focus:ring-2 focus:ring-blue-500"
             required
           />
         </div>
+
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-            Teléfono:
+          <label htmlFor="phone" className="block text-sm font-medium text-gray-800">
+            Teléfono
           </label>
           <input
             type="tel"
@@ -140,16 +156,18 @@ export default function ReservasOdontologia() {
             name="phone"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="mt-1 p-2 border rounded-md w-full"
+            placeholder="Ej: 123-456-7890"
+            className="mt-2 p-3 border rounded-lg w-full focus:ring-2 focus:ring-blue-500"
             required
           />
         </div>
+
         <div>
-          <label htmlFor="service" className="block text-sm font-medium text-gray-700">
-            Servicio odontológico:
+          <label htmlFor="service" className="block text-sm font-medium text-gray-800">
+            Servicio odontológico
           </label>
           <Select onValueChange={(valor) => setService(valor)}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="mt-2 w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500">
               <SelectValue placeholder="Selecciona un servicio" />
             </SelectTrigger>
             <SelectContent>
@@ -161,26 +179,39 @@ export default function ReservasOdontologia() {
             </SelectContent>
           </Select>
         </div>
-        <Select onValueChange={(valor) => setHour(valor)}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Selecciona un horario" />
-          </SelectTrigger>
-          <SelectContent>
-            {horarios.map((horario: any) => (
-              <SelectItem
-                value={horario}
-                key={horario}
-                disabled={disabledHours.includes(horario)}
-              >
-                {horario}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <button type="submit" className="mt-4 p-2 bg-blue-500 text-white rounded-md">
+
+        <div>
+          <label htmlFor="hour" className="block text-sm font-medium text-gray-800">
+            Horario
+          </label>
+          <Select onValueChange={(valor) => setHour(valor)}>
+            <SelectTrigger className="mt-2 w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500">
+              <SelectValue placeholder="Selecciona un horario" />
+            </SelectTrigger>
+            <SelectContent>
+              {horarios.map((horario: string) => (
+                <SelectItem
+                  value={horario}
+                  key={horario}
+                  disabled={disabledHours.includes(horario)}
+                >
+                  {horario}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <button
+          type="submit"
+          className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500"
+        >
           Reservar
         </button>
       </form>
     </div>
+  </div>
+
+
   );
 }

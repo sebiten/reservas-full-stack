@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import LogoutButton from "./LogoutButton";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon, UserIcon } from "lucide-react";
+import ProfileForm from "@/components/ProfileForm";
 
 export default async function Dashboard() {
   const supabase = createClient();
@@ -27,6 +28,7 @@ export default async function Dashboard() {
 
   return (
     <div className="container mx-auto p-4">
+      <ProfileForm user={userData}/>
       <div className="flex flex-col items-center space-y-4">
         {/* Perfil del Usuario */}
         <Card className="w-full max-w-md">
@@ -72,6 +74,7 @@ export default async function Dashboard() {
                   >
                     <div>
                       <p className="font-medium">{booking.service}</p>
+                      <p className="text-sm text-gray-500">{booking.name}</p>
                       <p className="text-sm text-gray-500">{booking.date}</p>
                     </div>
                     <Button variant="outline" size="sm">

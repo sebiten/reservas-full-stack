@@ -84,7 +84,34 @@ export async function subirReserva({
     return { success: false, message: err.message };
   }
 }
+export async function photo(formData: FormData) {
+  "use server";
+  const supabase = createClient();
+  const file = formData.get("img") as File;
 
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+  const userId = user?.id;
+
+  if (!error) {
+    const { data, error: uploadError } = await supabase.storage
+      .from("profile")
+      .upload(`user/${userId}`, file, {
+        upsert: true,
+      });
+    if (!uploadError) {
+      console.log(data);
+      revalidatePath("/perfil", "page");
+      return; // Early return after successful upload
+    } else {
+      console.error(uploadError);
+    }
+  } else {
+    console.error(error);
+  }
+}
 
 // Función para obtener todas las reservas
 export async function obtenerReservas(): Promise<Reserva[]> {
