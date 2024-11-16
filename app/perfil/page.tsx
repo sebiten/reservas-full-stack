@@ -11,6 +11,7 @@ import ProfileForm from "@/components/ProfileForm";
 export default async function Dashboard() {
   const supabase = createClient();
   const { data: userData, error: userError } = await supabase.auth.getUser();
+  const userId = userData.user?.id;
   const { data: bookings, error: bookingsError } = await supabase
     .from("reserva")
     .select("*")
@@ -28,7 +29,7 @@ export default async function Dashboard() {
 
   return (
     <div className="container mx-auto p-4">
-      <ProfileForm user={userData}/>
+      <ProfileForm userId={userId} />
       <div className="flex flex-col items-center space-y-4">
         {/* Perfil del Usuario */}
         <Card className="w-full max-w-md">

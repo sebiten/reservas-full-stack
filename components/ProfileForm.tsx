@@ -1,16 +1,32 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { createClient } from "@/utils/supabase/client";
-import { User } from "@supabase/supabase-js";
+import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 
-export default function ProfileForm(user: User) {
+export default function ProfileForm({ userId }: { userId: string | any }) {
+  const supabase = createClient();
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const userId = user.id;
+
+  // Obtener la URL de la imagen del usuario al cargar el componente
+  useEffect(() => {
+    const fetchImageUrl = async () => {
+      const { data } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(`public/${userId}/avatar.jpg`);
+      if (data?.publicUrl) {
+        setImageUrl(data.publicUrl);
+      }
+    };
+
+    fetchImageUrl();
+  }, [userId]);
+
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null;
 
@@ -29,29 +45,30 @@ export default function ProfileForm(user: User) {
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
-    const supabase = createClient();
     event.preventDefault();
     if (image) {
       setLoading(true);
       setErrorMessage(null);
 
       try {
-        // Cargar la imagen en Supabase Storage
+        // Subir la imagen al Storage
         const { data, error } = await supabase.storage
           .from("avatars")
-          .upload(`public/${userId}/${image.name}`, image, {
+          .upload(`public/${userId}/avatar.jpg`, image, {
             cacheControl: "3600",
-            upsert: true, // Cambiar a true si quieres sobreescribir el archivo existente
+            upsert: true,
           });
 
         if (error) {
           throw new Error(error.message);
         }
 
-        // Obtener la URL del archivo cargado
+        // Obtener la URL pública de la imagen
         const imageUrl = supabase.storage
           .from("avatars")
           .getPublicUrl(data.path).data.publicUrl;
+
+        setImageUrl(imageUrl);
         console.log("Imagen subida correctamente:", imageUrl);
       } catch (error) {
         setErrorMessage("Error al subir la imagen: " + error.message);
@@ -62,8 +79,18 @@ export default function ProfileForm(user: User) {
   };
 
   return (
-    <div className="flex items-center justify-center p-20">
-      <form onSubmit={handleSubmit} className="flex flex-col items-center">
+    <div className="flex flex-col items-center p-20">
+      {/* Mostrar avatar del usuario */}
+      <Avatar className="w-32 h-32">
+        <AvatarImage
+          src={imagePreview || imageUrl || ""}
+          alt="Avatar del usuario"
+          className="object-cover"
+        />
+        <AvatarFallback>U</AvatarFallback>
+      </Avatar>
+
+      <form onSubmit={handleSubmit} className="flex flex-col items-center mt-4">
         <div>
           <Input
             type="file"
@@ -72,16 +99,9 @@ export default function ProfileForm(user: User) {
             required
           />
         </div>
-        {imagePreview && (
-          <div className="mt-4">
-            <img
-              src={imagePreview}
-              alt="Previsualización"
-              className="w-32 h-32 object-cover"
-            />
-          </div>
-        )}
+
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+
         <button
           type="submit"
           className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
