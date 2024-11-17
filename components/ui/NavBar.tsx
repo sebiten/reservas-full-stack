@@ -1,4 +1,3 @@
-"use client";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,12 +10,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // import { createClient } from "@/utils/supabase/client";
 // import { useState } from "react";
 import { signOut } from "@/app/register/action";
+import { createClient } from "@/utils/supabase/client";
+import { User2Icon, UserIcon } from "lucide-react";
+import { Avatar, AvatarImage } from "./avatar";
 
-export function NavBar({ user }: { user: User | null }) {
+export async function NavBar({ user }: { user: User | null }) {
+  const supabase = createClient();
+  const userId = user?.id;
+  const { data } = supabase.storage
+    .from("avatars")
+    .getPublicUrl(`public/${userId}/avatar.jpg`);
+  const imgUrl = data?.publicUrl;
   // const supabase = createClient();
   // const [position, setPosition] = useState("bottom");
 
@@ -44,13 +51,15 @@ export function NavBar({ user }: { user: User | null }) {
               variant="ghost"
               className=" h-12 flex gap-2 hover:text-blue-500 transition duration-300 focus:outline-none"
             >
-              <Avatar className="h-10 w-10">
+              <Avatar>
                 <AvatarImage
-                  src={`https://aaxuhmukpnvrngnsqoym.supabase.co/storage/v1/object/public/profile/user/${
-                    user?.id
-                  }?v=${Date.now()}`}
+                  src={imgUrl}
+                  alt="Avatar del usuario"
+                  className="object-cover"
                 />
-                <AvatarFallback>CN</AvatarFallback>
+                {/* <AvatarFallback>
+                  <User2Icon className="w-8 h-8" />
+                </AvatarFallback> */}
               </Avatar>
               <span className="flex items-center gap-2">
                 <svg

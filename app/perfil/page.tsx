@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import LogoutButton from "./LogoutButton";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,10 @@ export default async function Dashboard() {
   const supabase = createClient();
   const { data: userData, error: userError } = await supabase.auth.getUser();
   const userId = userData.user?.id;
+  const { data } = supabase.storage
+    .from("avatars")
+    .getPublicUrl(`public/${userId}/avatar.jpg`);
+
   const { data: bookings, error: bookingsError } = await supabase
     .from("reserva")
     .select("*")
@@ -29,13 +33,17 @@ export default async function Dashboard() {
 
   return (
     <div className="container mx-auto p-4">
-      <ProfileForm userId={userId} />
       <div className="flex flex-col items-center space-y-4">
         {/* Perfil del Usuario */}
         <Card className="w-full max-w-md">
           <CardHeader>
             <div className="flex items-center space-x-4">
               <Avatar>
+                <AvatarImage
+                  src={data.publicUrl}
+                  alt="Avatar del usuario"
+                  className="object-cover"
+                />
                 <AvatarFallback>
                   <UserIcon className="w-8 h-8" />
                 </AvatarFallback>
@@ -53,6 +61,7 @@ export default async function Dashboard() {
               ¡Bienvenido de nuevo! Aquí puedes ver tus turnos reservados y
               gestionar tu perfil.
             </p>
+            <ProfileForm userId={userId} />
           </CardContent>
         </Card>
         {/* Sección de Turnos Reservados */}

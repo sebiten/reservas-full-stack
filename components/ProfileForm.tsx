@@ -4,6 +4,16 @@ import React, { useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { createClient } from "@/utils/supabase/client";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
+import { Button } from "./ui/button";
+import {
+  CrossIcon,
+  Edit2Icon,
+  FileEdit,
+  SidebarClose,
+  SidebarCloseIcon,
+} from "lucide-react";
+import { ToastClose } from "./ui/toast";
+import { Cross1Icon } from "@radix-ui/react-icons";
 
 export default function ProfileForm({ userId }: { userId: string | any }) {
   const supabase = createClient();
@@ -12,7 +22,7 @@ export default function ProfileForm({ userId }: { userId: string | any }) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
+  const [isClicked, setIsClicked] = useState<boolean>(false);
   // Obtener la URL de la imagen del usuario al cargar el componente
   useEffect(() => {
     const fetchImageUrl = async () => {
@@ -21,6 +31,7 @@ export default function ProfileForm({ userId }: { userId: string | any }) {
         .getPublicUrl(`public/${userId}/avatar.jpg`);
       if (data?.publicUrl) {
         setImageUrl(data.publicUrl);
+        console.log(data.publicUrl);
       }
     };
 
@@ -79,37 +90,36 @@ export default function ProfileForm({ userId }: { userId: string | any }) {
   };
 
   return (
-    <div className="flex flex-col items-center p-20">
-      {/* Mostrar avatar del usuario */}
-      <Avatar className="w-32 h-32">
-        <AvatarImage
-          src={imagePreview || imageUrl || ""}
-          alt="Avatar del usuario"
-          className="object-cover"
-        />
-        <AvatarFallback>U</AvatarFallback>
-      </Avatar>
-
-      <form onSubmit={handleSubmit} className="flex flex-col items-center mt-4">
-        <div>
-          <Input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            required
-          />
-        </div>
-
-        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-
-        <button
-          type="submit"
-          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
-          disabled={loading}
+    <div className="flex flex-col items-start m-2 relative max-w-xl mx-auto">
+      {isClicked ? (
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col items-center mt-4"
         >
-          {loading ? "Subiendo..." : "Subir Imagen"}
-        </button>
-      </form>
+          <div className="flex">
+            <Button type="submit" className=" rounded" disabled={loading}>
+              {loading ? "Subiendo..." : "Subir Imagen"}
+            </Button>
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              required
+            />
+            <Button className="" onClick={() => setIsClicked(false)}>
+              <Cross1Icon />
+            </Button>
+          </div>
+          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+        </form>
+      ) : (
+        <>
+          <Button onClick={() => setIsClicked(true)}>
+            <FileEdit size={14}  className="mr-1"/>
+            Editar foto de perfil
+          </Button>
+        </>
+      )}
     </div>
   );
 }
