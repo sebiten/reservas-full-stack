@@ -12,6 +12,41 @@ export async function logout() {
   redirect("/login");
 }
 
+// photo
+export async function photo(file: File) {
+  "use server";
+  const supabase = createClient();
+
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+  const userId = user?.id;
+
+  if (error) {
+    console.error(error);
+    return null;
+  }
+
+  const { error: uploadError } = await supabase.storage
+    .from("avatars")
+    .upload(`public/${userId}/avatar.jpg`, file, {
+      upsert: true,
+    });
+
+  if (uploadError) {
+    console.error(uploadError);
+    return null;
+  }
+
+  // Obtener la nueva URL pública
+  const { data: newAvatar } = supabase.storage
+    .from("avatars")
+    .getPublicUrl(`public/${userId}/avatar.jpg`);
+
+  return newAvatar?.publicUrl;
+}
+
 // Función para subir una reserva
 export async function subirReserva({
   date,
@@ -82,34 +117,6 @@ export async function subirReserva({
     return { success: true, data };
   } catch (err: any) {
     return { success: false, message: err.message };
-  }
-}
-export async function photo(formData: FormData) {
-  "use server";
-  const supabase = createClient();
-  const file = formData.get("img") as File;
-
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
-  const userId = user?.id;
-
-  if (!error) {
-    const { data, error: uploadError } = await supabase.storage
-      .from("profile")
-      .upload(`user/${userId}`, file, {
-        upsert: true,
-      });
-    if (!uploadError) {
-      console.log(data);
-      revalidatePath("/perfil", "page");
-      return; // Early return after successful upload
-    } else {
-      console.error(uploadError);
-    }
-  } else {
-    console.error(error);
   }
 }
 

@@ -2,6 +2,7 @@ import Image from "next/image";
 import GoogleSignin from "./login/GoogleSignin";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 export default async function Home() {
   const supabase = createClient();
@@ -20,6 +21,17 @@ export default async function Home() {
         )}
         {user && (
           <div className="flex flex-col items-center gap-6 text-center sm:text-left">
+            <Image
+              width={100}
+              height={100}
+              className="rounded-full"
+              quality={100}
+              unoptimized={true}
+              alt="Google-avatar"
+              src={
+                user?.user_metadata.picture || user?.user_metadata?.avatar_url
+              }
+            />
             <h2 className="text-2xl font-semibold">
               Bienvenido, {user.email} 👋
             </h2>

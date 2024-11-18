@@ -13,20 +13,11 @@ import { User } from "@supabase/supabase-js";
 // import { createClient } from "@/utils/supabase/client";
 // import { useState } from "react";
 import { signOut } from "@/app/register/action";
-import { createClient } from "@/utils/supabase/client";
 import { User2Icon, UserIcon } from "lucide-react";
 import { Avatar, AvatarImage } from "./avatar";
+import { createClient } from "@/utils/supabase/server";
 
 export async function NavBar({ user }: { user: User | null }) {
-  const supabase = createClient();
-  const userId = user?.id;
-  const { data } = supabase.storage
-    .from("avatars")
-    .getPublicUrl(`public/${userId}/avatar.jpg`);
-  const imgUrl = data?.publicUrl;
-  // const supabase = createClient();
-  // const [position, setPosition] = useState("bottom");
-
   return (
     <nav className="sticky p-4 z-50  border-b-2  w-full top-0  mx-auto flex items-center justify-around bg-white/95 dark:bg-zinc-950/95 ">
       <div className="flex flex-row-reverse items-center justify-center">
@@ -53,7 +44,10 @@ export async function NavBar({ user }: { user: User | null }) {
             >
               <Avatar>
                 <AvatarImage
-                  src={imgUrl}
+                  src={
+                    user?.user_metadata.picture ||
+                    user?.user_metadata?.avatar_url
+                  }
                   alt="Avatar del usuario"
                   className="object-cover"
                 />

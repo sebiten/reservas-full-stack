@@ -15,7 +15,7 @@ import {
 import { ToastClose } from "./ui/toast";
 import { Cross1Icon } from "@radix-ui/react-icons";
 
-export default function ProfileForm({ userId }: { userId: string | any }) {
+export default function ProfileForm({ userId }: { userId: string }) {
   const supabase = createClient();
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -69,7 +69,6 @@ export default function ProfileForm({ userId }: { userId: string | any }) {
             cacheControl: "3600",
             upsert: true,
           });
-
         if (error) {
           throw new Error(error.message);
         }
@@ -79,6 +78,7 @@ export default function ProfileForm({ userId }: { userId: string | any }) {
           .from("avatars")
           .getPublicUrl(data.path).data.publicUrl;
 
+        // Notificar al padre sobre la nueva URL
         setImageUrl(imageUrl);
         console.log("Imagen subida correctamente:", imageUrl);
       } catch (error) {
@@ -115,7 +115,7 @@ export default function ProfileForm({ userId }: { userId: string | any }) {
       ) : (
         <>
           <Button onClick={() => setIsClicked(true)}>
-            <FileEdit size={14}  className="mr-1"/>
+            <FileEdit size={14} className="mr-1" />
             Editar foto de perfil
           </Button>
         </>
