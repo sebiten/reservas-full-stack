@@ -229,11 +229,11 @@ export default function LoginForm() {
   const email = form.getValues("email");
 
   return (
-    <main className="flex justify-center items-center min-h-screen">
+    <main className="flex justify-center items-center">
       <Card className="w-[380px]">
         <CardHeader>
-          <CardTitle>Login</CardTitle>
-          <CardDescription>Login to your account</CardDescription>
+          <CardTitle>Inicio de sesion</CardTitle>
+          <CardDescription>Puedes iniciar sesion con google de manera rapida!</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -278,7 +278,7 @@ export default function LoginForm() {
                     Please wait
                   </>
                 ) : (
-                  "Login"
+                  "Inicar sesión"
                 )}
               </Button>
               <GoogleSignin />

@@ -9,7 +9,7 @@ import { revalidatePath } from "next/cache";
 export async function logout() {
   const supabase = createClient();
   await supabase.auth.signOut();
-  redirect("/login");
+  redirect("/");
 }
 
 // photo

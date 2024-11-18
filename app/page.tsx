@@ -3,6 +3,14 @@ import GoogleSignin from "./login/GoogleSignin";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default async function Home() {
   const supabase = createClient();
@@ -15,9 +23,21 @@ export default async function Home() {
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         {!user && (
-          <div className="flex gap-2 items-center">
-            <GoogleSignin />
-          </div>
+          <Card className="max-w-sm mx-auto my-8 shadow-lg rounded-lg">
+            <CardHeader>
+              <CardTitle className="text-center text-xl font-semibold">
+                ¡Bienvenido a nuestra Barbería!
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="text-center">
+              <p className="text-sm text-muted-foreground">
+                Inicia sesión para poder reservar tu turno fácilmente.
+              </p>
+            </CardContent>
+            <CardFooter className="flex justify-center">
+              <GoogleSignin />
+            </CardFooter>
+          </Card>
         )}
         {user && (
           <div className="flex flex-col items-center gap-6 text-center sm:text-left">

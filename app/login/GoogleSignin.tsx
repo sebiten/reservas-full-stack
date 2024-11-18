@@ -60,7 +60,7 @@ export default function GoogleSignin() {
           className="mr-2"
         />
       )}{" "}
-      Sign in with Google
+      Iniciar sesion con Google
     </Button>
   );
 }
