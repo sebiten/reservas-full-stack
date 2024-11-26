@@ -72,7 +72,7 @@ export async function subirReserva({
 
     // Verificar si ya existe una reserva para la misma fecha y hora
     const { data: existingReservation, error: errorFetch } = await supabase
-      .from("reserva")
+      .from("reservas")
       .select("*")
       .eq("date", formattedDate)
       .eq("hour", hour)
@@ -94,7 +94,7 @@ export async function subirReserva({
 
     // Insertar la nueva reserva en la tabla "reserva"
     const { data, error } = await supabase
-      .from("reserva")
+      .from("reservas")
       .insert([
         {
           date: formattedDate,
@@ -106,6 +106,7 @@ export async function subirReserva({
         },
       ])
       .select();
+    console.log(date, name, email, phone, hour, service);
 
     // Recargar la página después de crear la reserva
     revalidatePath("/");
@@ -127,7 +128,7 @@ export async function obtenerReservas(): Promise<Reserva[]> {
 
     // Obtener todas las reservas de la base de datos
     const { data: reservas, error } = await supabase
-      .from("reserva")
+      .from("reservas")
       .select("*");
 
     if (error) {

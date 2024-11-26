@@ -19,7 +19,6 @@ export interface Reserva {
   hour: string;
   name: string;
   phone: string;
-  user_id: string;
   service: string | undefined;
 }
 
@@ -72,7 +71,6 @@ export default function ReservasOdontologia() {
       }
 
       const email = data?.user?.email;
-      const user_id = data?.user?.email;
       if (!email) {
         alert("Usuario no autenticado. Por favor, inicia sesión.");
         return;
