@@ -120,12 +120,12 @@ export async function NavBar({ user }: { user: User | null }) {
               <>
                 <div className="flex justify-evenly items-center">
                   <Link href="/ingreso">
-                    <span className="mt-0 block text-sm  hover:text-blue-500 transition duration-300 focus:outline-none uppercase">
+                    <span className="mt-0 block text-sm  hover:text-blue-500 transition duration-300 focus:outline-none">
                       Ingresar
                     </span>
-                  </Link>
+                  </Link>nn
                   <Link href="/registro">
-                    <span className="hover:text-gray-300 text-sm transition duration-300 uppercase">
+                    <span className="hover:text-gray-300 text-sm transition duration-300">
                       Registrarse
                     </span>
                   </Link>
@@ -140,7 +140,7 @@ export async function NavBar({ user }: { user: User | null }) {
         <div className="flex">
           <Link href="/">
             <Button
-              className="md:text-md text-sm uppercase font-bold hover:text-blue-500 transition duration-300 focus:outline-none"
+              className="md:text-md text-sm font-bold hover:text-blue-500 transition duration-300 focus:outline-none"
               variant="ghost"
             >
               Inicio
@@ -149,7 +149,7 @@ export async function NavBar({ user }: { user: User | null }) {
 
           <Link href="/tienda">
             <Button
-              className="md:text-md text-sm uppercase font-bold hover:text-blue-500 transition duration-300 focus:outline-none"
+              className="md:text-md text-sm font-bold hover:text-blue-500 transition duration-300 focus:outline-none"
               variant="ghost"
             >
               Tienda

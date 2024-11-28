@@ -14,7 +14,7 @@ export default async function page() {
   const userId = userData.user?.id;
   const userEmail = userData.user?.email;
   const { data: bookingsData, error: bookingsError } = await supabase
-    .from("reserva")
+    .from("reservas")
     .select("*")
     .eq("email", userEmail);
 
