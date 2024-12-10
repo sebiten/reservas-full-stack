@@ -5,6 +5,7 @@ import LogoutButton from "./LogoutButton";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon, UserIcon } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
+import Link from "next/link";
 
 export default async function page() {
   const supabase = createClient();
@@ -19,7 +20,12 @@ export default async function page() {
     .eq("email", userEmail);
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="relative h-full w-full bg-white">
+    {/* Fondo dinámico con degradados */}
+    <div className="absolute bottom-0 left-0 right-0 top-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div>
+
+    {/* Contenido principal */}
+    <div className="relative container mx-auto p-4">
       <div className="flex flex-col items-center space-y-4">
         {/* Perfil del Usuario */}
         <Card className="w-full max-w-md">
@@ -54,7 +60,12 @@ export default async function page() {
           </CardHeader>
           <CardContent>
             {bookingsData?.length === 0 ? (
-              <p className="text-gray-500">No tienes turnos reservados aún.</p>
+              <>
+                <p className="text-gray-500">No tienes turnos reservados aún.</p>
+                <Button className="px-6 py-3 my-4 text-white bg-black rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all">
+                  <Link href="/reserva">¡Reserva tu turno ahora!</Link>
+                </Button>
+              </>
             ) : (
               <div className="space-y-2">
                 {bookingsData?.map((bookingsData) => (
@@ -90,5 +101,7 @@ export default async function page() {
         <LogoutButton />
       </div>
     </div>
+  </div>
+
   );
 }

@@ -82,9 +82,11 @@ export default function ProfileForm({ userId }: { userId: string }) {
         setImageUrl(imageUrl);
         console.log("Imagen subida correctamente:", imageUrl);
       } catch (error) {
-        setErrorMessage("Error al subir la imagen: " + error.message);
-      } finally {
-        setLoading(false);
+        if (error instanceof Error) {
+          setErrorMessage("Error al subir la imagen: " + error.message);
+        } else {
+          setErrorMessage("Error desconocido al subir la imagen.");
+        }
       }
     }
   };

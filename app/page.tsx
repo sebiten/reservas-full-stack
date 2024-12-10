@@ -18,9 +18,14 @@ export default async function Home() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  console.log(user?.user_metadata.picture);
 
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="relative h-full w-full bg-white">
+    {/* Fondo dinámico con degradados */}
+    <div className="absolute bottom-0 left-0 right-0 top-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div>
+
+    <div className="relative grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         {!user && (
           <Card className="max-w-sm mx-auto my-8 shadow-lg rounded-lg">
@@ -60,9 +65,14 @@ export default async function Home() {
               <span className="font-bold">Barbería Elite</span>? Ofrecemos los
               mejores servicios para que te veas genial.
             </p>
-            <button className="px-6 py-3 text-white bg-black rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all">
-              <Link href="/reserva">¡Reserva tu turno ahora!</Link>
-            </button>
+            <div className="flex gap-4">
+              <Button className="px-6 py-3 text-white bg-black rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all">
+                <Link href="/reserva">¡Reserva tu turno ahora!</Link>
+              </Button>
+              <Button className="px-6 py-3 text-white bg-black rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all">
+                <Link href="/perfil">¡Quiero ver mis turnos!</Link>
+              </Button>
+            </div>
             <p className="text-sm text-gray-500">
               ¿Primera vez aquí? Disfruta de un descuento del 10% en tu primer
               corte.
@@ -70,54 +80,7 @@ export default async function Home() {
           </div>
         )}
       </main>
-
-      {/* <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer> */}
     </div>
+  </div>
   );
 }
