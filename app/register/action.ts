@@ -41,7 +41,7 @@ import { redirect } from "next/navigation";
 
 export async function signOut() {
   const supabase = createClient();
-  await supabase.auth.signOut();
+  await (await supabase).auth.signOut();
   revalidatePath("/");
   return redirect("/");
 }
@@ -77,7 +77,7 @@ export const registerUser = async ({
   // supabase authentication from here
   const supabase = createClient();
 
-  const { data, error } = await supabase.auth.signUp({
+  const { data, error } = await (await supabase).auth.signUp({
     email,
     password,
   });

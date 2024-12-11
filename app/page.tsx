@@ -2,7 +2,7 @@ import Image from "next/image";
 import GoogleSignin from "./login/GoogleSignin";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Card,
   CardContent,
@@ -11,13 +11,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { User, User2, User2Icon } from "lucide-react";
 
 export default async function Home() {
   const supabase = createClient();
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await (await supabase).auth.getUser();
 
   return (
     <div className="relative h-full w-full bg-white">
@@ -49,15 +50,14 @@ export default async function Home() {
                 <AvatarImage
                   src={
                     user?.user_metadata.picture ||
-                    user?.user_metadata?.avatar_url ||
-                    "/favicon.ico"
+                    user?.user_metadata?.avatar_url
                   }
                   alt="Avatar del usuario"
                   className="object-cover"
                 />
-                {/* <AvatarFallback>
-                  <User2Icon className="w-8 h-8" />
-                </AvatarFallback> */}
+                <AvatarFallback>
+                  <User2 className="w-full h-full" />
+                </AvatarFallback>
               </Avatar>
               <h2 className="text-2xl font-semibold">
                 Bienvenido, {user.email} 👋

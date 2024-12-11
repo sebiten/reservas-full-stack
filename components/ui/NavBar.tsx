@@ -13,8 +13,8 @@ import { User } from "@supabase/supabase-js";
 // import { createClient } from "@/utils/supabase/client";
 // import { useState } from "react";
 import { signOut } from "@/app/register/action";
-import { User2Icon, UserIcon } from "lucide-react";
-import { Avatar, AvatarImage } from "./avatar";
+import { User2, User2Icon, UserIcon } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { createClient } from "@/utils/supabase/server";
 
 export async function NavBar({ user }: { user: User | null }) {
@@ -51,9 +51,9 @@ export async function NavBar({ user }: { user: User | null }) {
                   alt="Avatar del usuario"
                   className="object-cover"
                 />
-                {/* <AvatarFallback>
-                  <User2Icon className="w-8 h-8" />
-                </AvatarFallback> */}
+                <AvatarFallback>
+                  <User2 className="w-full h-full" />
+                </AvatarFallback>
               </Avatar>
               <span className="flex items-center gap-2">
                 <svg

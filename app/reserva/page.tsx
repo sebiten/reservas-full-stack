@@ -6,7 +6,7 @@ import React from "react";
 
 export default async function ReservaPage() {
   const supabase = createClient();
-  const { data, error } = await supabase.auth.getUser();
+  const { data, error } = await (await supabase).auth.getUser();
   if (!data) {
     redirect("/");
   }

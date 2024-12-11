@@ -4,18 +4,26 @@ import { Badge } from "@/components/ui/badge";
 import LogoutButton from "./LogoutButton";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon, UserIcon } from "lucide-react";
-import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
+import { createClient } from "@/utils/supabase/server";
 
 export default async function page() {
   const supabase = createClient();
-  const { data: userData, error: userError } = await supabase.auth.getUser();
-  const userId = userData.user?.id;
-  const userEmail = userData.user?.email;
-  const { data: bookingsData, error: bookingsError } = await supabase
-    .from("reservas")
+  const {
+    data: { user },
+  } = await (await supabase).auth.getUser()
+  const userId = user?.id;
+  const userEmail = user?.email;
+  const { data: bookingsData, error: bookingsError } = await (await supabase).from("reservas")
     .select("*")
     .eq("email", userEmail);
+
+  if (bookingsError) {
+    console.error("Error fetching bookings:", bookingsError.message);
+  } else {
+    console.log("Bookings data:", bookingsData);
+  }
+
 
   return (
     <div className="relative h-full w-full bg-white">
@@ -31,7 +39,7 @@ export default async function page() {
               <div className="flex items-center space-x-4">
                 <Avatar>
                   <AvatarImage
-                    src={userData.user?.user_metadata.picture}
+                    src={user?.user_metadata.picture}
                   ></AvatarImage>
                   <AvatarFallback>
                     <UserIcon className="w-8 h-8" />

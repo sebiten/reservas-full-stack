@@ -29,7 +29,7 @@ export default async function RootLayout({
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await (await supabase).auth.getUser();
 
   return (
     <html lang="en">

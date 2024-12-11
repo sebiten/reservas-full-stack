@@ -12,7 +12,7 @@ import GoogleSignin from "./GoogleSignin";
 
 export default async function LoginPage() {
   const supabase = createClient();
-  const { data } = await supabase.auth.getUser();
+  const { data } = await (await supabase).auth.getUser();
   const email = data.user?.email;
   if (data.user) {
     redirect("/");
