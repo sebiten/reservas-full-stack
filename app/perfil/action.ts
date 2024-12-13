@@ -8,7 +8,7 @@ import { revalidatePath } from "next/cache";
 // Función para cerrar sesión
 export async function logout() {
   const supabase = createClient();
-  await supabase.auth.signOut();
+  await (await supabase).auth.signOut();
   redirect("/");
 }
 
@@ -20,7 +20,7 @@ export async function photo(file: File) {
   const {
     data: { user },
     error,
-  } = await supabase.auth.getUser();
+  } = await (await supabase).auth.getUser();
   const userId = user?.id;
 
   if (error) {
@@ -28,7 +28,7 @@ export async function photo(file: File) {
     return null;
   }
 
-  const { error: uploadError } = await supabase.storage
+  const { error: uploadError } = await (await supabase).storage
     .from("avatars")
     .upload(`public/${userId}/avatar.jpg`, file, {
       upsert: true,
@@ -40,7 +40,7 @@ export async function photo(file: File) {
   }
 
   // Obtener la nueva URL pública
-  const { data: newAvatar } = supabase.storage
+  const { data: newAvatar } = (await supabase).storage
     .from("avatars")
     .getPublicUrl(`public/${userId}/avatar.jpg`);
 
@@ -71,7 +71,9 @@ export async function subirReserva({
     const formattedDate = date.toISOString().split("T")[0];
 
     // Verificar si ya existe una reserva para la misma fecha y hora
-    const { data: existingReservation, error: errorFetch } = await supabase
+    const { data: existingReservation, error: errorFetch } = await (
+      await supabase
+    )
       .from("reservas")
       .select("*")
       .eq("date", formattedDate)
@@ -91,9 +93,10 @@ export async function subirReserva({
         message: "Ya existe una reserva para esta fecha y hora.",
       };
     }
-
     // Insertar la nueva reserva en la tabla "reserva"
-    const { data, error } = await supabase
+    const { data, error } = await (
+      await supabase
+    )
       .from("reservas")
       .insert([
         {
@@ -106,7 +109,6 @@ export async function subirReserva({
         },
       ])
       .select();
-    console.log(date, name, email, phone, hour, service);
 
     // Recargar la página después de crear la reserva
     revalidatePath("/");
@@ -127,7 +129,7 @@ export async function obtenerReservas(): Promise<Reserva[]> {
     const supabase = createClient();
 
     // Obtener todas las reservas de la base de datos
-    const { data: reservas, error } = await supabase
+    const { data: reservas, error } = await (await supabase)
       .from("reservas")
       .select("*");
 
