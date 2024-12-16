@@ -13,11 +13,11 @@ export default function RegistrationConfirmation() {
             <Mail className="h-16 w-16 text-blue-500" />
           </div>
           <p className="text-gray-600 mb-4">
-            We've sent a password reset link to your email address. Please check
+            We have sent a password reset link to your email address. Please check
             your inbox and click the link to reset your password.
           </p>
           <p className="text-sm text-gray-500">
-            If you don't see the email, please check your spam folder.
+            If you dont see the email, please check your spam folder.
           </p>
         </CardContent>
       </Card>
