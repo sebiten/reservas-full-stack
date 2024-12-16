@@ -15,9 +15,7 @@ export default async function page() {
   const {
     data: { user },
   } = await (await supabase).auth.getUser()
-  const userId = user?.id;
   const userEmail = user?.email;
-  const userImage = user?.user_metadata.picture
   const { data: bookingsData, error: bookingsError } = await (await supabase).from("reservas")
     .select("*")
     .eq("email", userEmail);
@@ -41,19 +39,18 @@ export default async function page() {
           <Card className="w-full max-w-md">
             <CardHeader>
               <div className="flex items-center space-x-4">
-              <Avatar>
-                <AvatarImage
-                  src={
-                    user?.user_metadata.picture ||
-                    user?.user_metadata?.avatar_url
-                  }
-                  alt="Avatar del usuario"
-                  className="object-cover"
-                />
-                <AvatarFallback>
-                  <User2Icon className="w-full h-full" />
-                </AvatarFallback>
-              </Avatar>
+                <Avatar>
+                  <AvatarImage
+                    src={
+                      image
+                    }
+                    alt="Avatar del usuario"
+                    className="object-cover"
+                  />
+                  <AvatarFallback>
+                    <User2Icon className="w-full h-full" />
+                  </AvatarFallback>
+                </Avatar>
                 <div>
                   <CardTitle className="text-xl font-bold">{userEmail}</CardTitle>
                   <Badge variant="outline">Cliente Regular</Badge>

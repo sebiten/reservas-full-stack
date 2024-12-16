@@ -151,36 +151,27 @@ export async function obtenerReservas(): Promise<Reserva[]> {
   }
 }
 
-export async function CancelarReserva(formData: FormData) {
-  const id = formData.get("id"); // ID de la reserva a cancelar
-
-  if (!id) {
-    throw new Error("No se proporcionó el ID de la reserva.");
-  }
-
+export async function CancelarReserva(formData: FormData): Promise<void> {
   try {
     const supabase = createClient();
 
-    // Eliminar la reserva en la base de datos
-    const { error } = await (await supabase)
-      .from("reservas")
-      .delete()
-      .eq("id", id);
+    const reservaId = formData.get("reservaId") as string;
 
-    if (error) {
-      throw new Error(`Error al cancelar la reserva: ${error.message}`);
+    // Validar el ID de la reserva
+    if (!reservaId) {
+      throw new Error("No se proporcionó el ID de la reserva.");
     }
 
-    // Revalidar la página actual para actualizar la lista
-    revalidatePath("/perfil"); // Asegúrate de ajustar la ruta según sea necesario
+    // Eliminar la reserva en la base de datos
+    const { error } = await (await supabase).from("reservas").delete().eq("id", reservaId);
 
-    return { success: true };
+    if (error) {
+      console.error("Error al cancelar la reserva:", error.message);
+    }
   } catch (err: any) {
-    console.error("Error al cancelar la reserva:", err.message);
-    return { success: false, error: err.message };
+    console.error("Error en CancelarReserva:", err.message);
   }
 }
-
 export async function ObtenerImagenPerfil() {
   try {
     const supabase = createClient();
