@@ -150,3 +150,65 @@ export async function obtenerReservas(): Promise<Reserva[]> {
     throw new Error(`Error al obtener reservas: ${err.message}`);
   }
 }
+
+export async function CancelarReserva(formData: FormData) {
+  const id = formData.get("id"); // ID de la reserva a cancelar
+
+  if (!id) {
+    throw new Error("No se proporcionó el ID de la reserva.");
+  }
+
+  try {
+    const supabase = createClient();
+
+    // Eliminar la reserva en la base de datos
+    const { error } = await (await supabase)
+      .from("reservas")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      throw new Error(`Error al cancelar la reserva: ${error.message}`);
+    }
+
+    // Revalidar la página actual para actualizar la lista
+    revalidatePath("/perfil"); // Asegúrate de ajustar la ruta según sea necesario
+
+    return { success: true };
+  } catch (err: any) {
+    console.error("Error al cancelar la reserva:", err.message);
+    return { success: false, error: err.message };
+  }
+}
+
+export async function ObtenerImagenPerfil() {
+  try {
+    const supabase = createClient();
+
+    // Obtener información del usuario autenticado
+    const {
+      data: { user },
+      error,
+    } = await (await supabase).auth.getUser();
+
+    if (error) {
+      throw new Error(`Error al obtener el usuario: ${error.message}`);
+    }
+
+    if (!user) {
+      throw new Error("No se encontró un usuario autenticado.");
+    }
+
+    // Obtener la imagen desde los metadatos del usuario
+    const userImage = user.user_metadata?.picture;
+
+    if (!userImage) {
+      throw new Error("El usuario no tiene una imagen de perfil.");
+    }
+
+    return { success: true, image: userImage };
+  } catch (err: any) {
+    console.error("Error al obtener la imagen de perfil:", err.message);
+    return { success: false, error: err.message };
+  }
+}

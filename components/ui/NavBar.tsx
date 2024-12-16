@@ -13,7 +13,7 @@ import { User } from "@supabase/supabase-js";
 // import { createClient } from "@/utils/supabase/client";
 // import { useState } from "react";
 import { signOut } from "@/app/register/action";
-import { User2, User2Icon, UserIcon } from "lucide-react";
+import { User2, User2Icon, UserIcon, UserX2Icon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { createClient } from "@/utils/supabase/server";
 
@@ -52,7 +52,7 @@ export async function NavBar({ user }: { user: User | null }) {
                   className="object-cover"
                 />
                 <AvatarFallback>
-                  <User2 className="w-full h-full" />
+                  <User2Icon className="w-7 h-10" />
                 </AvatarFallback>
               </Avatar>
               <span className="flex items-center gap-2">
@@ -100,7 +100,7 @@ export async function NavBar({ user }: { user: User | null }) {
                           variant="outline"
                           className="hover:text-blue-500 transition duration-300"
                         >
-                          Profile
+                          Perfil
                         </Button>
                       </Link>
                       <Button
@@ -108,11 +108,11 @@ export async function NavBar({ user }: { user: User | null }) {
                         formAction={signOut}
                         className="py-2 px-4 rounded-md no-underline "
                       >
-                        Logout
+                        Cerrar Sesión
                       </Button>
                     </div>
                   ) : (
-                    <Link href="/login">Login</Link>
+                    <Link href="/login">Iniciar Sesión</Link>
                   )}
                 </div>
               </form>
@@ -141,18 +141,18 @@ export async function NavBar({ user }: { user: User | null }) {
           <Link href="/">
             <Button
               className="md:text-md text-sm font-bold hover:text-blue-500 transition duration-300 focus:outline-none"
-              variant="ghost"
+              variant="outline"
             >
               Inicio
             </Button>
           </Link>
 
-          <Link href="/tienda">
+          <Link href="/perfil">
             <Button
               className="md:text-md text-sm font-bold hover:text-blue-500 transition duration-300 focus:outline-none"
-              variant="ghost"
+              variant="outline"
             >
-              Tienda
+              Turnos Reservados
             </Button>
           </Link>
         </div>

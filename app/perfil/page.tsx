@@ -3,17 +3,21 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import LogoutButton from "./LogoutButton";
 import { Button } from "@/components/ui/button";
-import { CalendarIcon, UserIcon } from "lucide-react";
+import { CalendarIcon, User, User2, User2Icon, UserIcon } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
+import { CancelarReserva, ObtenerImagenPerfil } from "./action";
 
 export default async function page() {
+
   const supabase = createClient();
+  const { success, image, error } = await ObtenerImagenPerfil();
   const {
     data: { user },
   } = await (await supabase).auth.getUser()
   const userId = user?.id;
   const userEmail = user?.email;
+  const userImage = user?.user_metadata.picture
   const { data: bookingsData, error: bookingsError } = await (await supabase).from("reservas")
     .select("*")
     .eq("email", userEmail);
@@ -37,14 +41,19 @@ export default async function page() {
           <Card className="w-full max-w-md">
             <CardHeader>
               <div className="flex items-center space-x-4">
-                <Avatar>
-                  <AvatarImage
-                    src={user?.user_metadata.picture}
-                  ></AvatarImage>
-                  <AvatarFallback>
-                    <UserIcon className="w-8 h-8" />
-                  </AvatarFallback>
-                </Avatar>
+              <Avatar>
+                <AvatarImage
+                  src={
+                    user?.user_metadata.picture ||
+                    user?.user_metadata?.avatar_url
+                  }
+                  alt="Avatar del usuario"
+                  className="object-cover"
+                />
+                <AvatarFallback>
+                  <User2Icon className="w-full h-full" />
+                </AvatarFallback>
+              </Avatar>
                 <div>
                   <CardTitle className="text-xl font-bold">{userEmail}</CardTitle>
                   <Badge variant="outline">Cliente Regular</Badge>
@@ -74,30 +83,28 @@ export default async function page() {
                 </>
               ) : (
                 <div className="space-y-2">
-                  {bookingsData?.map((bookingsData) => (
+                  {bookingsData?.map((booking) => (
                     <div
-                      key={bookingsData.id}
+                      key={booking.id}
                       className="flex justify-between items-center border-b pb-2"
                     >
                       <div>
-                        <p className="font-medium">{bookingsData.service}</p>
-                        <p className="text-sm text-gray-500">
-                          {bookingsData.name}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          {bookingsData.date}
-                        </p>
+                        <p className="font-medium">{booking.service}</p>
+                        <p className="text-sm text-gray-500">{booking.name}</p>
+                        <p className="text-sm text-gray-500">{booking.date}</p>
                       </div>
-                      <div className="flex flex-col">
+                      <form action={CancelarReserva} className="flex flex-col">
+                        <input type="hidden" name="id" value={booking.id} />
                         <Button variant="outline" size="sm">
                           <CalendarIcon className="mr-2 h-4 w-4" /> Ver Detalles
                         </Button>
-                        <Button variant="destructive" size="sm">
+                        <Button type="submit" variant="destructive" size="sm">
                           <CalendarIcon className="mr-2 h-4 w-4" /> Cancelar turno
                         </Button>
-                      </div>
+                      </form>
                     </div>
                   ))}
+
                 </div>
               )}
             </CardContent>
