@@ -6,12 +6,11 @@ import { Button } from "@/components/ui/button";
 import { CalendarIcon, User, User2, User2Icon, UserIcon } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
-import { CancelarReserva, ObtenerImagenPerfil } from "./action";
+import { CancelarReserva } from "./action";
 
 export default async function page() {
 
   const supabase = createClient();
-  const { success, image, error } = await ObtenerImagenPerfil();
   const {
     data: { user },
   } = await (await supabase).auth.getUser()
@@ -40,13 +39,6 @@ export default async function page() {
             <CardHeader>
               <div className="flex items-center space-x-4">
                 <Avatar>
-                  <AvatarImage
-                    src={
-                      image
-                    }
-                    alt="Avatar del usuario"
-                    className="object-cover"
-                  />
                   <AvatarFallback>
                     <User2Icon className="w-full h-full" />
                   </AvatarFallback>

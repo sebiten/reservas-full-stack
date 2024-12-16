@@ -172,34 +172,34 @@ export async function CancelarReserva(formData: FormData): Promise<void> {
     console.error("Error en CancelarReserva:", err.message);
   }
 }
-export async function ObtenerImagenPerfil() {
-  try {
-    const supabase = createClient();
+// export async function ObtenerImagenPerfil() {
+//   try {
+//     const supabase = createClient();
 
-    // Obtener información del usuario autenticado
-    const {
-      data: { user },
-      error,
-    } = await (await supabase).auth.getUser();
+//     // Obtener información del usuario autenticado
+//     const {
+//       data: { user },
+//       error,
+//     } = await (await supabase).auth.getUser();
 
-    if (error) {
-      throw new Error(`Error al obtener el usuario: ${error.message}`);
-    }
+//     if (error) {
+//       throw new Error(`Error al obtener el usuario: ${error.message}`);
+//     }
 
-    if (!user) {
-      throw new Error("No se encontró un usuario autenticado.");
-    }
+//     if (!user) {
+//       throw new Error("No se encontró un usuario autenticado.");
+//     }
 
-    // Obtener la imagen desde los metadatos del usuario
-    const userImage = user.user_metadata?.picture;
+//     // Obtener la imagen desde los metadatos del usuario
+//     const userImage = user.user_metadata?.picture;
 
-    if (!userImage) {
-      throw new Error("El usuario no tiene una imagen de perfil.");
-    }
+//     if (!userImage) {
+//       throw new Error("El usuario no tiene una imagen de perfil.");
+//     }
 
-    return { success: true, image: userImage };
-  } catch (err: any) {
-    console.error("Error al obtener la imagen de perfil:", err.message);
-    return { success: false, error: err.message };
-  }
-}
+//     return { success: true, image: userImage };
+//   } catch (err: any) {
+//     console.error("Error al obtener la imagen de perfil:", err.message);
+//     return { success: false, error: err.message };
+//   }
+// }

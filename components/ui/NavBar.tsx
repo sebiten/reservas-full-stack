@@ -43,14 +43,7 @@ export async function NavBar({ user }: { user: User | null }) {
               className=" h-12 flex gap-2 hover:text-blue-500 transition duration-300 focus:outline-none"
             >
               <Avatar>
-                <AvatarImage
-                  src={
-                    user?.user_metadata.picture ||
-                    user?.user_metadata?.avatar_url
-                  }
-                  alt="Avatar del usuario"
-                  className="object-cover"
-                />
+
                 <AvatarFallback>
                   <User2Icon className="w-7 h-10" />
                 </AvatarFallback>
