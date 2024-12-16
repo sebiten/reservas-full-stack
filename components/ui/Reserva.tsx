@@ -12,6 +12,8 @@ import { horarios, serviciosOdontologia } from "@/lib/constantes";
 import { obtenerReservas, subirReserva } from "@/app/perfil/action";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "./button";
+import Link from "next/link";
+import { toast, useToast } from "@/hooks/use-toast";
 
 // Tipo para los datos de la reserva
 export interface Reserva {
@@ -23,6 +25,7 @@ export interface Reserva {
 }
 
 export default function ReservasOdontologia() {
+  const { toast } = useToast()
   const supabase = createClient();
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [name, setName] = useState("");
@@ -87,9 +90,18 @@ export default function ReservasOdontologia() {
       });
 
       if (response.success) {
-        alert("Reserva creada exitosamente.");
+        toast({
+          title: "Éxito ✅",
+          description: "Reserva creada exitosamente.",
+          variant: "default",
+        });
       } else {
-        alert(`Error al crear reserva: ${response.message}`);
+        toast({
+          title: "Error",
+          description: `No se pudo crear la reserva: ${response.message}`,
+          variant: "destructive",
+        });
+
       }
     } catch (error) {
       console.error("Error al enviar la reserva:", error);
@@ -98,14 +110,14 @@ export default function ReservasOdontologia() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center py-8 px-4 sm:px-6 lg:px-8">
+    <div className="flex flex-col items-center w-full justify-center py-8 px-4 sm:px-6 lg:px-8">
       <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
-        Reserva tu turno odontológico
+        Reserva tu turno!
       </h1>
       {/* Contenedor horizontal */}
       <div className="flex flex-col lg:flex-row items-start justify-center gap-8 w-full max-w-4xl">
         {/* Calendario */}
-        <div className="w-full lg:w-1/2">
+        <div className=" mx-auto">
           <Calendar
             mode="single"
             selected={date}
@@ -222,6 +234,11 @@ export default function ReservasOdontologia() {
           <Button type="submit" className="w-full py-3  rounded-lg ">
             Reservar
           </Button>
+          <Link href={"/perfil"}>
+            <Button className="w-full py-3 mt-2  rounded-lg ">
+              Ver mis turnos
+            </Button>
+          </Link>
         </form>
       </div>
     </div>

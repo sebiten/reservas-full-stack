@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { NavBar } from "@/components/ui/NavBar";
 import { createClient } from "@/utils/supabase/server";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -37,7 +38,11 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <NavBar user={user!} />
-        {children}
+        <main>
+
+          {children}
+        </main>
+        <Toaster/>
       </body>
     </html>
   );

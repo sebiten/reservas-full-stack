@@ -155,16 +155,16 @@ export async function CancelarReserva(formData: FormData): Promise<void> {
   try {
     const supabase = createClient();
 
-    const reservaId = formData.get("reservaId") as string;
-
+    const id = formData.get("id") as string;
+    ;
     // Validar el ID de la reserva
-    if (!reservaId) {
+    if (!id) {
       throw new Error("No se proporcionó el ID de la reserva.");
     }
 
     // Eliminar la reserva en la base de datos
-    const { error } = await (await supabase).from("reservas").delete().eq("id", reservaId);
-
+    const { error } = await (await supabase).from("reservas").delete().eq("id", id);
+    revalidatePath("/perfil")
     if (error) {
       console.error("Error al cancelar la reserva:", error.message);
     }

@@ -13,7 +13,7 @@ import { User } from "@supabase/supabase-js";
 // import { createClient } from "@/utils/supabase/client";
 // import { useState } from "react";
 import { signOut } from "@/app/register/action";
-import { User2, User2Icon, UserIcon, UserX2Icon } from "lucide-react";
+import { Edit, Home, List, User2, User2Icon, UserIcon, UserX2Icon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { createClient } from "@/utils/supabase/server";
 
@@ -40,7 +40,7 @@ export async function NavBar({ user }: { user: User | null }) {
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
-              className=" h-12 flex gap-2 hover:text-blue-500 transition duration-300 focus:outline-none"
+              className=" h-12 flex gap-2 hover:text-blue-900 transition duration-300 focus:outline-none"
             >
               <Avatar>
 
@@ -83,37 +83,47 @@ export async function NavBar({ user }: { user: User | null }) {
             </DropdownMenuRadioGroup> */}
             {/* Add your additional menu items here based on the user and other conditions */}
             {user ? (
-              <form className="mt-2  flex justify-center items-center">
-                <div className="w-full  max-w-4xl flex justify-center items-center text-sm">
-                  {user ? (
-                    <div className="flex items-center gap-2">
-                      <Link href="/perfil">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="hover:text-blue-500 transition duration-300"
-                        >
-                          Perfil
-                        </Button>
-                      </Link>
-                      <Button
-                        type="submit"
-                        formAction={signOut}
-                        className="py-2 px-4 rounded-md no-underline "
-                      >
-                        Cerrar Sesión
-                      </Button>
-                    </div>
-                  ) : (
-                    <Link href="/login">Iniciar Sesión</Link>
-                  )}
+            <form className="mt-2 flex justify-center items-center">
+            <div className="w-full max-w-4xl flex justify-center items-center text-sm">
+              {user ? (
+                <div className="flex flex-col sm:flex-row items-center gap-2">
+                  <Link href="/perfil">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="hover:text-blue-500 transition duration-300 w-full sm:w-auto"
+                    >
+                      Perfil
+                    </Button>
+                  </Link>
+                  <Link href="/perfil">
+                    <Button
+                      className="md:text-md text-sm font-bold hover:text-blue-900 transition duration-300 focus:outline-none flex gap-1 w-full sm:w-auto"
+                      variant="outline"
+                    >
+                      <List size={17} />
+                      Mis turnos
+                    </Button>
+                  </Link>
+                  <Button
+                    type="submit"
+                    formAction={signOut}
+                    className="py-2 px-4 rounded-md no-underline w-full sm:w-auto"
+                  >
+                    Cerrar Sesión
+                  </Button>
                 </div>
-              </form>
+              ) : (
+                <Link href="/login">Iniciar Sesión</Link>
+              )}
+            </div>
+          </form>
+
             ) : (
               <>
                 <div className="flex justify-evenly items-center">
                   <Link href="/ingreso">
-                    <span className="mt-0 block text-sm  hover:text-blue-500 transition duration-300 focus:outline-none">
+                    <span className="mt-0 block text-sm  hover:text-blue-900 transition duration-300 focus:outline-none">
                       Ingresar
                     </span>
                   </Link>nn
@@ -131,23 +141,27 @@ export async function NavBar({ user }: { user: User | null }) {
 
       <div className="flex items-center justify-center  gap-1">
         <div className="flex">
+          { }
           <Link href="/">
             <Button
-              className="md:text-md text-sm font-bold hover:text-blue-500 transition duration-300 focus:outline-none"
+              className="md:text-md text-sm font-bold hover:text-blue-900 transition duration-300 focus:outline-none flex gap-1"
               variant="outline"
             >
+              <Home size={17} />
               Inicio
             </Button>
           </Link>
 
-          <Link href="/perfil">
+          <Link href="/reserva">
             <Button
-              className="md:text-md text-sm font-bold hover:text-blue-500 transition duration-300 focus:outline-none"
+              className="md:text-md text-sm font-bold hover:text-blue-900 transition duration-300 focus:outline-none flex gap-1"
               variant="outline"
             >
-              Turnos Reservados
+              <Edit size={17} />
+              Reservar
             </Button>
           </Link>
+
         </div>
       </div>
     </nav>
