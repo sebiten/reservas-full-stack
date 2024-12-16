@@ -55,9 +55,9 @@ export default async function Home() {
                   alt="Avatar del usuario"
                   className="object-cover"
                 />
-                <AvatarFallback>
+                {/* <AvatarFallback>
                   <User2 className="w-full h-full" />
-                </AvatarFallback>
+                </AvatarFallback> */}
               </Avatar>
               <h2 className="text-2xl font-semibold">
                 Bienvenido, {user.email} 👋
