@@ -11,7 +11,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { User, User2, User2Icon } from "lucide-react";
 
 export default async function Home() {
   const supabase = createClient();
@@ -19,6 +18,9 @@ export default async function Home() {
   const {
     data: { user },
   } = await (await supabase).auth.getUser();
+
+  console.log(user?.user_metadata.avatar_url);
+
 
   return (
     <div className="relative h-full w-full bg-white">
@@ -46,22 +48,24 @@ export default async function Home() {
           )}
           {user && (
             <div className="flex flex-col items-center gap-6 text-center sm:text-left">
-              <Avatar>
-                <AvatarImage
-                  src={
-                    user?.user_metadata.picture ||
-                    user?.user_metadata?.avatar_url
-                  }
-                  alt="Avatar del usuario"
-                  className="object-cover"
-                />
-                {/* <AvatarFallback>
+              <div className="flex items-center justify-center gap-2" >
+                <Avatar>
+                  <AvatarImage
+                    src={
+                      user.user_metadata.avatar_url || user.user_metadata.picture
+                    }
+                    alt="Avatar del usuario"
+                    className="object-cover w-56"
+                  />
+                  {/* <AvatarFallback>
                   <User2 className="w-full h-full" />
                 </AvatarFallback> */}
-              </Avatar>
-              <h2 className="text-2xl font-semibold">
-                Bienvenido, {user.email} 👋
-              </h2>
+                </Avatar>
+                <h2 className="text-2xl font-semibold">
+                  Bienvenido, {user.email} 👋
+                </h2>
+              </div>
+
               <p className="text-lg">
                 ¿Estás listo para reservar tu próximo turno con{" "}
                 <span className="font-bold">Barbería Elite</span>? Ofrecemos los
