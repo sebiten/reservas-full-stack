@@ -287,20 +287,9 @@ export default function LoginForm() {
         </CardContent>
         <CardFooter className="flex-col gap-2">
           <div className="text-muted-foreground text-sm">
-            Don't have an account?{" "}
+           No tienes cuenta?{" "}
             <Link href="/register" className="underline">
-              Register
-            </Link>
-          </div>
-          <div className="text-muted-foreground text-sm">
-            Forgot password?{" "}
-            <Link
-              href={`/forgot-password${
-                email ? `?email=${encodeURIComponent(email)}` : ""
-              }`}
-              className="underline"
-            >
-              Reset my password
+              Registrarse
             </Link>
           </div>
         </CardFooter>

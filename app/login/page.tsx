@@ -12,45 +12,42 @@ import GoogleSignin from "./GoogleSignin";
 
 export default async function LoginPage() {
   const supabase = createClient();
-  const { data } = await (await supabase).auth.getUser();
-  const email = data.user?.email;
-  if (data.user) {
+  const { data: { user }, error } = await (await supabase).auth.getUser();
+
+
+  // Si el usuario está autenticado, redirigir al inicio
+  if (user) {
     redirect("/");
   }
 
   return (
-    <>
-      {!data ? (
-        <Card className="max-w-sm mx-auto my-8 shadow-lg rounded-lg">
-          <CardHeader>
-            <CardTitle className="text-center text-xl font-semibold">
-              ¡Bienvenido a nuestra Barbería!
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-sm text-muted-foreground">{email}</p>
-          </CardContent>
-          <CardFooter className="flex justify-center">
-            <GoogleSignin />
-          </CardFooter>
-        </Card>
-      ) : (
-        <Card className="max-w-sm mx-auto my-8 shadow-lg rounded-lg">
-          <CardHeader>
-            <CardTitle className="text-center text-xl font-semibold">
-              ¡Bienvenido a nuestra Barbería!
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-sm text-muted-foreground">
-              Inicia sesión para poder reservar tu turno fácilmente.
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <Card className="w-full max-w-sm mx-auto shadow-lg rounded-lg animate-fade-in">
+        <CardHeader>
+          <CardTitle className="text-center text-2xl font-semibold">
+            ¡Bienvenido a nuestra Barbería!
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-center text-gray-600">
+            {user
+              ? `Estás autenticado como ${user.user.full_name}.`
+              : "Inicia sesión para poder reservar tu turno fácilmente."}
+          </p>
+        </CardContent>
+        <CardFooter className="flex flex-col gap-4 items-center">
+          {user ? (
+            <p className="text-center text-sm text-green-600">
+              Redirigiendo...
             </p>
-          </CardContent>
-          <CardFooter className="flex justify-center">
-            <LoginForm />
-          </CardFooter>
-        </Card>
-      )}
-    </>
+          ) : (
+            <>
+              <GoogleSignin />
+              <LoginForm />
+            </>
+          )}
+        </CardFooter>
+      </Card>
+    </div>
   );
 }

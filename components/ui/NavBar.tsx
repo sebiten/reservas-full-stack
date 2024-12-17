@@ -3,55 +3,114 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
-  // DropdownMenuRadioGroup,
-  // DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
-// import { createClient } from "@/utils/supabase/client";
-// import { useState } from "react";
 import { signOut } from "@/app/register/action";
-import { Edit, Home, List, User2, User2Icon, UserIcon, UserX2Icon } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
-import { createClient } from "@/utils/supabase/server";
+import { Edit, Home, List, User2Icon } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export async function NavBar({ user }: { user: User | null }) {
   return (
-    <nav className="sticky p-4 z-50  border-b-2  w-full top-0  mx-auto flex items-center justify-around bg-white/95 dark:bg-zinc-950/95 ">
-      <div className="flex flex-row-reverse items-center justify-center">
-        <div className=" gap-4 hidden sm:grid">
-          {/* {!user && (
-            <div className="flex gap-2 items-center">
-              <Button
-                variant="outline"
-                className="flex items-center gap-2"
-                onClick={handleLogin}
-              >
-                <FcGoogle />
-                Login
-              </Button>
-            </div>
-          )} */}
+    <nav className="sticky top-0 z-50 w-full border-b-2 bg-white/95 dark:bg-zinc-950/95 shadow-sm">
+      <div className="container mx-auto flex items-center justify-between px-4 py-2">
+        {/* Logo o sección izquierda */}
+        <div className="flex items-center space-x-4">
+          <Link href="/" className="text-lg font-bold text-gray-800 hover:text-blue-700">
+            BarberíaPro
+          </Link>
         </div>
 
+        {/* Botones centrales */}
+        <div className="hidden sm:flex items-center space-x-2">
+          <Link href="/">
+            <Button
+              className="md:text-md text-sm font-bold hover:text-blue-700 transition-all"
+              variant="outline"
+            >
+              <Home size={17} />
+              Inicio
+            </Button>
+          </Link>
+          <Link href="/reserva">
+            <Button
+              className="md:text-md text-sm font-bold hover:text-blue-700 transition-all"
+              variant="outline"
+            >
+              <Edit size={17} />
+              Reservar
+            </Button>
+          </Link>
+        </div>
+
+        {/* Menú de usuario */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
-              className=" h-12 flex gap-2 hover:text-blue-900 transition duration-300 focus:outline-none"
+              className="flex items-center gap-2 rounded-full p-1 hover:bg-gray-100 dark:hover:bg-zinc-800"
             >
-              <Avatar>
-
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={user?.user_metadata?.avatar_url} alt="Avatar del usuario" />
                 <AvatarFallback>
-                  <User2Icon className="w-7 h-10" />
+                  <User2Icon className="w-6 h-6 text-gray-500" />
                 </AvatarFallback>
               </Avatar>
-              <span className="flex items-center gap-2">
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-60 mt-2 shadow-lg rounded-md bg-white">
+            <DropdownMenuLabel className="text-center font-semibold">
+              Hola! 👋 {user?.email || "Invitado"}
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {user ? (
+              <div className="flex flex-col items-start px-2">
+                <Link href="/perfil" className="w-full">
+                  <Button
+                    className="w-full justify-start hover:text-blue-500 transition-all"
+                    variant="ghost"
+                  >
+                    <List size={17} className="mr-2" />
+                    Mis Turnos
+                  </Button>
+                </Link>
+                <form action={signOut} className="w-full">
+                  <Button
+                    type="submit"
+                    variant="destructive"
+                    className="w-full justify-start "
+                  >
+                    Cerrar Sesión
+                  </Button>
+                </form>
+              </div>
+            ) : (
+              <div className="flex flex-col px-2">
+                <Link href="/ingreso">
+                  <Button variant="outline" className="w-full mb-2">
+                    Ingresar
+                  </Button>
+                </Link>
+                <Link href="/registro">
+                  <Button variant="default" className="w-full">
+                    Registrarse
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {/* Menú hamburguesa para móviles */}
+        <div className="sm:hidden">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="p-2 hover:bg-gray-100">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-7 w-7"
+                  className="h-6 w-6"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -63,105 +122,17 @@ export async function NavBar({ user }: { user: User | null }) {
                     d="M4 6h16M4 12h16m-7 6h7"
                   />
                 </svg>
-              </span>
-            </Button>
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent className="w-72 shadow-lg  rounded-md p-2">
-            <DropdownMenuLabel className="text-lg font-semibold text-center">
-              Hola!👋 {user?.email}
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator className="my-2" />
-            {/* <DropdownMenuRadioGroup
-              value={position}
-              onValueChange={setPosition}
-            >
-              <DropdownMenuRadioItem
-                value="link"
-                className="text-lg"
-              ></DropdownMenuRadioItem>
-            </DropdownMenuRadioGroup> */}
-            {/* Add your additional menu items here based on the user and other conditions */}
-            {user ? (
-            <form className="mt-2 flex justify-center items-center">
-            <div className="w-full max-w-4xl flex justify-center items-center text-sm">
-              {user ? (
-                <div className="flex flex-col sm:flex-row items-center gap-2">
-                  <Link href="/perfil">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="hover:text-blue-500 transition duration-300 w-full sm:w-auto"
-                    >
-                      Perfil
-                    </Button>
-                  </Link>
-                  <Link href="/perfil">
-                    <Button
-                      className="md:text-md text-sm font-bold hover:text-blue-900 transition duration-300 focus:outline-none flex gap-1 w-full sm:w-auto"
-                      variant="outline"
-                    >
-                      <List size={17} />
-                      Mis turnos
-                    </Button>
-                  </Link>
-                  <Button
-                    type="submit"
-                    formAction={signOut}
-                    className="py-2 px-4 rounded-md no-underline w-full sm:w-auto"
-                  >
-                    Cerrar Sesión
-                  </Button>
-                </div>
-              ) : (
-                <Link href="/login">Iniciar Sesión</Link>
-              )}
-            </div>
-          </form>
-
-            ) : (
-              <>
-                <div className="flex justify-evenly items-center">
-                  <Link href="/ingreso">
-                    <span className="mt-0 block text-sm  hover:text-blue-900 transition duration-300 focus:outline-none">
-                      Ingresar
-                    </span>
-                  </Link>nn
-                  <Link href="/registro">
-                    <span className="hover:text-gray-300 text-sm transition duration-300">
-                      Registrarse
-                    </span>
-                  </Link>
-                </div>
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      <div className="flex items-center justify-center  gap-1">
-        <div className="flex">
-          { }
-          <Link href="/">
-            <Button
-              className="md:text-md text-sm font-bold hover:text-blue-900 transition duration-300 focus:outline-none flex gap-1"
-              variant="outline"
-            >
-              <Home size={17} />
-              Inicio
-            </Button>
-          </Link>
-
-          <Link href="/reserva">
-            <Button
-              className="md:text-md text-sm font-bold hover:text-blue-900 transition duration-300 focus:outline-none flex gap-1"
-              variant="outline"
-            >
-              <Edit size={17} />
-              Reservar
-            </Button>
-          </Link>
-
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56 shadow-md rounded-md">
+              <Link href="/" className="block p-2 hover:bg-gray-100 rounded-md">
+                <Home className="inline mr-2" /> Inicio
+              </Link>
+              <Link href="/reserva" className="block p-2 hover:bg-gray-100 rounded-md">
+                <Edit className="inline mr-2" /> Reservar
+              </Link>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </nav>
