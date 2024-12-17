@@ -1,5 +1,5 @@
 import { Document, Page, View, Text, Image, StyleSheet } from "@react-pdf/renderer";
-
+import logo from "@/app/public/logo.png"
 // Estilos mejorados
 const styles = StyleSheet.create({
   page: {
@@ -64,7 +64,7 @@ export default function BookingPDF({ booking }: { booking: any }) {
         {/* Encabezado */}
         <View style={styles.header}>
           <Image
-            src="/defaulAvatar.webp" // Verifica si está en la carpeta /public
+            src="https://diymvatafxdxkfvkizrg.supabase.co/storage/v1/object/public/Logo/png.png?t=2024-12-17T15%3A27%3A12.659Z" // Verifica si está en la carpeta /public
             style={styles.logo}
           />
           <Text style={styles.title}>Detalles de la Reserva</Text>
@@ -77,9 +77,11 @@ export default function BookingPDF({ booking }: { booking: any }) {
 
           <Text style={styles.label}>Nombre:</Text>
           <Text style={styles.text}>{booking.name}</Text>
-
           <Text style={styles.label}>Fecha:</Text>
           <Text style={styles.text}>{booking.date}</Text>
+
+          <Text style={styles.label}>Hora:</Text>
+          <Text style={styles.text}>{booking.hour}</Text>
         </View>
 
         {/* Pie de página */}

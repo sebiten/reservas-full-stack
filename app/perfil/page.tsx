@@ -18,6 +18,7 @@ interface Booking {
   service: string;
   name: string;
   date: string;
+  hour: string | number;
 }
 
 export default function Page() {
@@ -129,6 +130,7 @@ export default function Page() {
                         </p>
                         <p className="text-sm text-gray-500">{booking.name}</p>
                         <p className="text-sm text-gray-500">{booking.date}</p>
+                        <p className="text-sm text-gray-500">{booking.hour}</p>
                       </div>
                       <div className="flex flex-col gap-2">
                         <Button
