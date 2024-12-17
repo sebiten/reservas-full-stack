@@ -1,6 +1,7 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
-import { Calendar } from "./calendar"; // Componente Calendar de ShadCN
+import { Calendar } from "./calendar";
 import {
   Select,
   SelectContent,
@@ -13,7 +14,7 @@ import { obtenerReservas, subirReserva } from "@/app/perfil/action";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "./button";
 import Link from "next/link";
-import { toast, useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 // Tipo para los datos de la reserva
 export interface Reserva {
@@ -25,8 +26,8 @@ export interface Reserva {
 }
 
 export default function ReservasOdontologia() {
-  const { toast } = useToast()
   const supabase = createClient();
+  const { toast } = useToast();
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -65,21 +66,27 @@ export default function ReservasOdontologia() {
     event.preventDefault();
 
     try {
-      // Obtener el email del usuario autenticado
       const { data, error } = await supabase.auth.getUser();
       if (error) {
         console.error("Error al obtener el usuario:", error);
-        alert("No se pudo obtener el email del usuario.");
+        toast({
+          title: "Error de autenticación",
+          description: "Debes estar autenticado para reservar.",
+          variant: "destructive",
+        });
         return;
       }
 
       const email = data?.user?.email;
       if (!email) {
-        alert("Usuario no autenticado. Por favor, inicia sesión.");
+        toast({
+          title: "Usuario no autenticado",
+          description: "Por favor, inicia sesión para continuar.",
+          variant: "destructive",
+        });
         return;
       }
 
-      // Subir la reserva con los datos y el email del usuario
       const response = await subirReserva({
         date: date!,
         name,
@@ -91,33 +98,37 @@ export default function ReservasOdontologia() {
 
       if (response.success) {
         toast({
-          title: "Éxito ✅",
-          description: "Reserva creada exitosamente.",
+          title: "Reserva creada exitosamente 🎉",
+          description: `Tu turno está reservado para ${date?.toLocaleDateString()} a las ${hour}.`,
           variant: "default",
         });
       } else {
         toast({
-          title: "Error",
-          description: `No se pudo crear la reserva: ${response.message}`,
+          title: "Error al crear la reserva",
+          description: response.message,
           variant: "destructive",
         });
-
       }
     } catch (error) {
       console.error("Error al enviar la reserva:", error);
-      alert("Hubo un error al procesar la reserva.");
+      toast({
+        title: "Error inesperado",
+        description: "No se pudo procesar tu reserva. Inténtalo de nuevo.",
+        variant: "destructive",
+      });
     }
   };
 
   return (
-    <div className="flex flex-col items-center w-full justify-center py-8 px-4 sm:px-6 lg:px-8">
-      <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
-        Reserva tu turno!
+    <div className="flex flex-col items-center w-full justify-center py-10 px-4 sm:px-6 lg:px-8">
+      <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center animate-fade-in">
+        Reserva tu turno odontológico 🦷
       </h1>
-      {/* Contenedor horizontal */}
-      <div className="flex flex-col lg:flex-row items-start justify-center gap-8 w-full max-w-4xl">
-        {/* Calendario */}
-        <div className=" mx-auto">
+
+      {/* Contenedor principal */}
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-10 w-full max-w-5xl animate-slide-up">
+        {/* Calendario con sombra y animación */}
+        <div className="mx-auto bg-white p-4 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out">
           <Calendar
             mode="single"
             selected={date}
@@ -126,58 +137,46 @@ export default function ReservasOdontologia() {
           />
         </div>
 
-        {/* Formulario */}
+        {/* Formulario estilizado */}
         <form
           onSubmit={handleSubmit}
-          className="w-full lg:w-1/2 space-y-6 bg-white p-6 rounded-lg shadow-lg"
+          className="w-full lg:w-1/2 space-y-6 bg-white p-8 rounded-lg shadow-lg transition-all hover:shadow-2xl duration-300 ease-in-out"
         >
+          {/* Fecha seleccionada */}
           <div>
-            <label
-              htmlFor="selectedDate"
-              className="block text-sm font-medium text-gray-800"
-            >
+            <label className="block text-sm font-medium text-gray-700">
               Fecha seleccionada
             </label>
             <input
               type="text"
-              id="selectedDate"
-              name="selectedDate"
               value={date ? date.toISOString().split("T")[0] : ""}
               readOnly
-              className="mt-2 p-3 border rounded-lg w-full bg-gray-100 text-gray-700"
+              className="mt-2 p-3 border rounded-lg w-full bg-gray-100 text-gray-700 focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
+          {/* Nombre */}
           <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-800"
-            >
+            <label className="block text-sm font-medium text-gray-700">
               Nombre del paciente
             </label>
             <input
               type="text"
-              id="name"
-              name="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Ingrese su nombre completo"
+              placeholder="Tu nombre completo"
               className="mt-2 p-3 border rounded-lg w-full focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
 
+          {/* Teléfono */}
           <div>
-            <label
-              htmlFor="phone"
-              className="block text-sm font-medium text-gray-800"
-            >
+            <label className="block text-sm font-medium text-gray-700">
               Teléfono
             </label>
             <input
               type="tel"
-              id="phone"
-              name="phone"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="Ej: 123-456-7890"
@@ -186,19 +185,17 @@ export default function ReservasOdontologia() {
             />
           </div>
 
+          {/* Servicio */}
           <div>
-            <label
-              htmlFor="service"
-              className="block text-sm font-medium text-gray-800"
-            >
+            <label className="block text-sm font-medium text-gray-700">
               Servicio odontológico
             </label>
-            <Select onValueChange={(valor) => setService(valor)}>
+            <Select onValueChange={setService}>
               <SelectTrigger className="mt-2 w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500">
                 <SelectValue placeholder="Selecciona un servicio" />
               </SelectTrigger>
               <SelectContent>
-                {serviciosOdontologia.map((servicio: string) => (
+                {serviciosOdontologia.map((servicio) => (
                   <SelectItem value={servicio} key={servicio}>
                     {servicio}
                   </SelectItem>
@@ -207,19 +204,17 @@ export default function ReservasOdontologia() {
             </Select>
           </div>
 
+          {/* Horario */}
           <div>
-            <label
-              htmlFor="hour"
-              className="block text-sm font-medium text-gray-800"
-            >
+            <label className="block text-sm font-medium text-gray-700">
               Horario
             </label>
-            <Select onValueChange={(valor) => setHour(valor)}>
+            <Select onValueChange={setHour}>
               <SelectTrigger className="mt-2 w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500">
                 <SelectValue placeholder="Selecciona un horario" />
               </SelectTrigger>
               <SelectContent>
-                {horarios.map((horario: string) => (
+                {horarios.map((horario) => (
                   <SelectItem
                     value={horario}
                     key={horario}
@@ -231,11 +226,19 @@ export default function ReservasOdontologia() {
               </SelectContent>
             </Select>
           </div>
-          <Button type="submit" className="w-full py-3  rounded-lg ">
+
+          {/* Botón de enviar */}
+          <Button type="submit" className="w-full py-3 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition-all duration-200">
             Reservar
           </Button>
-          <Link href={"/perfil"}>
-            <Button className="w-full py-3 mt-2  rounded-lg ">
+
+          {/* Botón para ver turnos */}
+          <Link href="/perfil">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full py-3 rounded-lg hover:bg-gray-100"
+            >
               Ver mis turnos
             </Button>
           </Link>

@@ -33,17 +33,6 @@ export const loginUser = async ({
   // supabase authentication from here
   const supabase = createClient();
 
-  ///////////////////////////// TEST for redirection ///////////
-  // const { data, error } = await supabase.auth.getUser();
-  // const {
-  //   data: { user },
-  // } = await supabase.auth.getUser();
-
-  // if (user) {
-  //   return redirect("/dashboard");
-  // }
-
-  ///////////////////////////////////////////
 
   const { data, error } = await (await supabase).auth.signInWithPassword({
     email,
