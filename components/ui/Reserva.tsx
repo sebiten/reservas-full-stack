@@ -121,8 +121,8 @@ export default function ReservasOdontologia() {
 
   return (
     <div className="flex flex-col items-center w-full justify-center py-10 px-4 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center animate-fade-in">
-        Reserva tu turno odontológico 🦷
+      <h1 className="text-3xl font-bold text-gray-800 mb-8 text-start animate-fade-in">
+        Reserva tu turno ahora!
       </h1>
 
       {/* Contenedor principal */}

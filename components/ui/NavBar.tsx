@@ -56,7 +56,7 @@ export async function NavBar({ user }: { user: User | null }) {
               <Avatar className="h-8 w-8">
                 <AvatarImage src={user?.user_metadata?.avatar_url} alt="Avatar del usuario" />
                 <AvatarFallback>
-                  <User2Icon className="w-6 h-6 text-gray-500" />
+                  <User2Icon className="w-7 h-8 text-gray-500" />
                 </AvatarFallback>
               </Avatar>
             </Button>
