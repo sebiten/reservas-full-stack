@@ -12,11 +12,10 @@ import GoogleSignin from "./GoogleSignin";
 
 export default async function LoginPage() {
   const supabase = createClient();
-  const { data: { user }, error } = await (await supabase).auth.getUser();
+  const { data, error } = await (await supabase).auth.getUser();
+  const user = data?.user as { email?: string } | null;
 
-
-  // Si el usuario está autenticado, redirigir al inicio
-  if (user) {
+  if (user?.email) {
     redirect("/");
   }
 
@@ -31,7 +30,7 @@ export default async function LoginPage() {
         <CardContent>
           <p className="text-center text-gray-600">
             {user
-              ? `Estás autenticado como ${user.user.full_name}.`
+              ? `Estás autenticado como ${user.email}.`
               : "Inicia sesión para poder reservar tu turno fácilmente."}
           </p>
         </CardContent>

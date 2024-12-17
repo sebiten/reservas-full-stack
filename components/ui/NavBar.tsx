@@ -14,7 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export async function NavBar({ user }: { user: User | null }) {
   return (
-    <nav className="sticky top-0 z-50 w-full border-b-2 bg-white/95 dark:bg-zinc-950/95 shadow-sm">
+    <nav className="sticky top-0 z-50 w-full border-b-2 p-3 bg-white/95 dark:bg-zinc-950/95 shadow-sm">
       <div className="container mx-auto flex items-center justify-between px-4 py-2">
         {/* Logo o sección izquierda */}
         <div className="flex items-center space-x-4">
@@ -34,7 +34,7 @@ export async function NavBar({ user }: { user: User | null }) {
               Inicio
             </Button>
           </Link>
-          <Link href="/reserva">
+          {user ? <Link href="/reserva">
             <Button
               className="md:text-md text-sm font-bold hover:text-blue-700 transition-all"
               variant="outline"
@@ -42,7 +42,8 @@ export async function NavBar({ user }: { user: User | null }) {
               <Edit size={17} />
               Reservar
             </Button>
-          </Link>
+          </Link> : ""}
+
         </div>
 
         {/* Menú de usuario */}
