@@ -7,10 +7,11 @@ import LogoutButton from "./LogoutButton";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon, User2Icon } from "lucide-react";
 import Link from "next/link";
-import { PDFViewer } from "@react-pdf/renderer";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { createClient } from "@/utils/supabase/client";
 import { CancelarReserva } from "./action";
 import BookingPDF from "@/components/ui/BookingPDF";
+import DownloadButton from "@/components/ui/DownloadButton";
 
 // Definir tipo para los datos de la reserva
 interface Booking {
@@ -96,6 +97,10 @@ export default function Page() {
               ¡Bienvenido de nuevo! Aquí puedes ver tus turnos reservados y
               gestionar tu perfil.
             </p>
+            {/* Botón de Cerrar Sesión */}
+            <div className="w-full max-w-lg text-center animate-fade-in-up mt-2">
+              <LogoutButton />
+            </div>
           </CardContent>
         </Card>
 
@@ -158,17 +163,16 @@ export default function Page() {
 
         {/* PDF Viewer para mostrar detalles */}
         {selectedBooking && (
-          <div className="w-full max-w-lg mt-8 h-[500px] border rounded-md shadow-lg">
+          <div className="w-full max-w-lg h-[500px] rounded-md shadow-lg">
+            {/* Botón de descarga */}
+            <DownloadButton selectedBooking={selectedBooking} />
+            {/* Visor PDF */}
             <PDFViewer width="100%" height="100%">
               <BookingPDF booking={selectedBooking} />
             </PDFViewer>
+
           </div>
         )}
-
-        {/* Botón de Cerrar Sesión */}
-        <div className="w-full max-w-lg text-center animate-fade-in-up">
-          <LogoutButton />
-        </div>
       </div>
     </div>
   );

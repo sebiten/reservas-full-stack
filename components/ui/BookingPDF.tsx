@@ -51,9 +51,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: "center",
     color: "#6b7280", // Gris más claro
-    marginTop: 20,
     borderTop: "1 solid #e5e7eb",
-    paddingTop: 10,
   },
 });
 
