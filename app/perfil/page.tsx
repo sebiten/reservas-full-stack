@@ -28,6 +28,25 @@ export default function Page() {
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const supabase = createClient();
+  const handleCancel = async (formData: FormData) => {
+    try {
+      const response = await CancelarReserva(formData);
+
+      if (response.success) {
+        const idToDelete: any = formData.get("id");
+
+        setBookingsData((prevBookings) =>
+          prevBookings.filter((booking) => booking.id !== idToDelete)
+        );
+      } else {
+        console.error("Error al cancelar la reserva:", response.error);
+      }
+    } catch (error) {
+      console.error("Error al cancelar la reserva:", error);
+    }
+  };
+
+
 
   // Obtener datos del usuario y las reservas
   useEffect(() => {
@@ -145,13 +164,25 @@ export default function Page() {
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" /> Ver Detalles
                         </Button>
-                        <form action={CancelarReserva}>
+
+
+                        <form>
                           <input type="hidden" name="id" value={booking.id} />
-                          <Button type="submit" variant="destructive" size="sm">
-                            <CalendarIcon className="mr-2 h-4 w-4" /> Cancelar
-                            turno
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            onClick={async () => {
+                              const formData = new FormData();
+                              formData.append("id", booking.id.toString()); // Asegúrate de que el ID sea correcto
+                              await handleCancel(formData);
+                            }}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" /> Cancelar turno
                           </Button>
                         </form>
+
+
                       </div>
                     </div>
                   ))}
@@ -167,9 +198,9 @@ export default function Page() {
             {/* Botón de descarga */}
             <DownloadButton selectedBooking={selectedBooking} />
             {/* Visor PDF */}
-            <PDFViewer width="100%" height="100%">
+            {/* <PDFViewer width="100%" height="100%">
               <BookingPDF booking={selectedBooking} />
-            </PDFViewer>
+            </PDFViewer> */}
 
           </div>
         )}

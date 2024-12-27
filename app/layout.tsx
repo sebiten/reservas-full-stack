@@ -19,6 +19,9 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Aplicacion de turnos",
   description: "Apliacion de reservas de turnos.",
+  icons: {
+    icon:"/favicon.ico"
+  }
 };
 
 export default async function RootLayout({

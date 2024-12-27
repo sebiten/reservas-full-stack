@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { Reserva } from "@/components/ui/Reserva";
 import { createClient } from "@/utils/supabase/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 // Función para cerrar sesión
 export async function logout() {
@@ -66,10 +66,8 @@ export async function subirReserva({
   try {
     // Crear el cliente de Supabase
     const supabase = createClient();
-
     // Convertir la fecha a formato 'YYYY-MM-DD'
     const formattedDate = date.toISOString().split("T")[0];
-
     // Verificar si ya existe una reserva para la misma fecha y hora
     const { data: existingReservation, error: errorFetch } = await (
       await supabase
@@ -79,13 +77,11 @@ export async function subirReserva({
       .eq("date", formattedDate)
       .eq("hour", hour)
       .limit(1);
-
     if (errorFetch) {
       throw new Error(
         `Error al verificar reserva existente: ${errorFetch.message}`
       );
     }
-
     // Si ya existe una reserva, devolver un mensaje de error
     if (existingReservation && existingReservation.length > 0) {
       return {
@@ -151,27 +147,21 @@ export async function obtenerReservas(): Promise<Reserva[]> {
   }
 }
 
-export async function CancelarReserva(formData: FormData): Promise<void> {
-  try {
-    const supabase = createClient();
+export async function CancelarReserva(formData: FormData) {
+  const id = formData.get("id");
+  const supabase = createClient();
 
-    const id = formData.get("id") as string;
-    ;
-    // Validar el ID de la reserva
-    if (!id) {
-      throw new Error("No se proporcionó el ID de la reserva.");
-    }
+  const { error } = await (await supabase)
+    .from("reservas")
+    .delete()
+    .eq("id", id);
 
-    // Eliminar la reserva en la base de datos
-    const { error } = await (await supabase).from("reservas").delete().eq("id", id);
-    revalidatePath("/perfil")
-    if (error) {
-      console.error("Error al cancelar la reserva:", error.message);
-    }
-  } catch (err: any) {
-    console.error("Error en CancelarReserva:", err.message);
+  if (error) {
+    return { success: false, error: error.message };
   }
+  return { success: true };
 }
+
 // export async function ObtenerImagenPerfil() {
 //   try {
 //     const supabase = createClient();
