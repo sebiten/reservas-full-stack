@@ -46,8 +46,6 @@ export default function Page() {
     }
   };
 
-
-
   // Obtener datos del usuario y las reservas
   useEffect(() => {
     const fetchUserAndBookings = async () => {
@@ -198,9 +196,9 @@ export default function Page() {
             {/* Botón de descarga */}
             <DownloadButton selectedBooking={selectedBooking} />
             {/* Visor PDF */}
-            {/* <PDFViewer width="100%" height="100%">
+            <PDFViewer width="100%" height="100%">
               <BookingPDF booking={selectedBooking} />
-            </PDFViewer> */}
+            </PDFViewer>
 
           </div>
         )}
