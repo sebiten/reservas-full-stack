@@ -13,7 +13,6 @@ import { CancelarReserva } from "./action";
 import BookingPDF from "@/components/ui/BookingPDF";
 import DownloadButton from "@/components/ui/DownloadButton";
 
-// Definir tipo para los datos de la reserva
 interface Booking {
   id: number;
   service: string;
@@ -28,6 +27,8 @@ export default function Page() {
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const supabase = createClient();
+
+  //Cancel res
   const handleCancel = async (formData: FormData) => {
     try {
       const response = await CancelarReserva(formData);
@@ -189,7 +190,6 @@ export default function Page() {
             </CardContent>
           </Card>
         )}
-
         {/* PDF Viewer para mostrar detalles */}
         {selectedBooking && (
           <div className="w-full max-w-lg h-[500px] rounded-md shadow-lg">

@@ -162,34 +162,3 @@ export async function CancelarReserva(formData: FormData) {
   return { success: true };
 }
 
-// export async function ObtenerImagenPerfil() {
-//   try {
-//     const supabase = createClient();
-
-//     // Obtener información del usuario autenticado
-//     const {
-//       data: { user },
-//       error,
-//     } = await (await supabase).auth.getUser();
-
-//     if (error) {
-//       throw new Error(`Error al obtener el usuario: ${error.message}`);
-//     }
-
-//     if (!user) {
-//       throw new Error("No se encontró un usuario autenticado.");
-//     }
-
-//     // Obtener la imagen desde los metadatos del usuario
-//     const userImage = user.user_metadata?.picture;
-
-//     if (!userImage) {
-//       throw new Error("El usuario no tiene una imagen de perfil.");
-//     }
-
-//     return { success: true, image: userImage };
-//   } catch (err: any) {
-//     console.error("Error al obtener la imagen de perfil:", err.message);
-//     return { success: false, error: err.message };
-//   }
-// }
