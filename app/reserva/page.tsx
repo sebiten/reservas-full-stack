@@ -11,7 +11,7 @@ export default async function ReservaPage() {
     redirect("/");
   }
   return (
-    <div className="flex w-full items-center justify-center">
+    <div className="flex w-full items-center justify-center bg-[#1A1A1A]">
       <Reservas />
     </div>
   );

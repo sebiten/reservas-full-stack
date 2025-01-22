@@ -23,7 +23,7 @@ export async function POST(req: Request) {
         pass: process.env.EMAIL_PASS!,
       },
     });
-
+    console.log("email desde la api", email)
     // Opciones del correo
     const mailOptions = {
       from: email,

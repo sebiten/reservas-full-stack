@@ -10,9 +10,10 @@ export const horarios = [
   "19:00",
 ];
 export const serviciosOdontologia = [
-  "Consulta General",
-  "Limpieza Dental",
-  "Blanqueamiento",
-  "Ortodoncia",
-  "Endodoncia",
+  "Corte clásico",
+  "Arreglo de barba",
+  "Afeitado tradicional con navaja",
+  "Coloración de cabello o barba",
+  "Planchado o alisado capilar",
+  "Servicio de niños",
 ];

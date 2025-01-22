@@ -95,25 +95,24 @@ export default function Page() {
   };
 
   const { user, bookingsData, selectedBooking, loading, first } = state;
-
   return (
     <div className="relative min-h-screen w-full bg-gradient-to-br from-[#1A1A1A] to-[#2C2C2C] text-gray-200">
       {/* Header de Usuario */}
       <header className="relative w-full bg-gradient-to-r from-[#333333] to-[#444444] py-8 px-6 shadow-md">
-        {/* Imagen de fondo */}
         <img
           src="/imgbg.webp"
           alt="Fondo de barbería"
           className="absolute inset-0 w-full h-full object-cover z-0 object-top"
           loading="lazy"
         />
-
-        {/* Overlay de gradiente */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-black/80 z-0"></div>
-
         <div className="relative z-10 container mx-auto flex flex-col items-center text-center">
           {loading ? (
-            <Skeleton className="h-10 w-1/2" />
+            <div className="flex flex-col items-center space-y-4">
+              <Skeleton className="h-24 w-24 rounded-full" />
+              <Skeleton className="h-6 w-1/2" />
+              <Skeleton className="h-4 w-1/3" />
+            </div>
           ) : (
             <>
               <Avatar className="h-24 w-24 shadow-md my-2">
@@ -140,12 +139,13 @@ export default function Page() {
         </div>
       </header>
 
-
       {/* Turnos Reservados */}
       <main className="container mx-auto max-w-5xl p-6 space-y-6">
         <h2 className="text-xl font-semibold text-white">Tus Turnos Reservados</h2>
         {loading ? (
-          <Skeleton className="h-16 w-full" />
+          Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton key={i} className="h-16 w-full mb-4" />
+          ))
         ) : bookingsData.length === 0 ? (
           <div className="text-center text-gray-400">
             <p>No tienes turnos reservados aún.</p>
@@ -197,7 +197,7 @@ export default function Page() {
         <div className="w-full max-w-5xl mx-auto p-6">
           <div className="bg-[#1A1A1A] shadow-md rounded-md p-4">
             <DownloadButton selectedBooking={selectedBooking} />
-            <Suspense fallback={<div className="text-gray-400">Cargando visor PDF...</div>}>
+            <Suspense fallback={<Skeleton className="h-96 w-full" />}>
               <PDFViewer width="100%" height="500px">
                 <BookingPDF booking={selectedBooking} />
               </PDFViewer>

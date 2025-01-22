@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   title: "Aplicacion de turnos",
   description: "Apliacion de reservas de turnos.",
   icons: {
-    icon:"/favicon.ico"
+    icon: "/favicon.ico"
   }
 };
 
@@ -38,14 +38,13 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased absolute inset-0 bg-gradient-to-b from-black/80 to-black/80 z-0`}
       >
         <NavBar user={user!} />
         <main>
-
           {children}
         </main>
-        <Toaster/>
+        <Toaster />
       </body>
     </html>
   );

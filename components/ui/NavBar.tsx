@@ -15,14 +15,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export async function NavBar({ user }: { user: User | null }) {
   return (
     <nav className="sticky top-0 z-50 w-full bg-[#1A1A1A] border-[#444444] shadow-md">
-      <div className="container mx-auto flex items-center justify-between px-6 py-6">
+      <div className="container mx-auto flex items-center justify-between px-6 py-2">
         {/* Logo o sección izquierda */}
         <div className="flex items-center space-x-6">
           <Link
             href="/"
             className="text-2xl font-extrabold text-white hover:text-[#D4AF37] transition-all"
           >
-            Barbería
+            <img className="object-cover h-20 w-20" src="/logopng.png" />
           </Link>
         </div>
 
@@ -30,7 +30,7 @@ export async function NavBar({ user }: { user: User | null }) {
         <div className="hidden sm:flex items-center space-x-6">
           <Link href="/">
             <Button
-              className="flex items-center gap-2 px-4 py-2 text-white bg-[#2C2C2C] hover:bg-[#444444] border border-[#444444] rounded-lg transition-all"
+              className="flex items-center gap-2 px-4 py-2 text-white bg-[#2C2C2C] hover:bg-[#D4AF37] hover:border-[#D4AF37] border border-[#444444] rounded-lg transition-all"
               variant="outline"
             >
               <Home size={20} /> Inicio
@@ -40,7 +40,7 @@ export async function NavBar({ user }: { user: User | null }) {
             <>
               <Link href="/reserva">
                 <Button
-                  className="flex items-center gap-2 px-4 py-2 text-white bg-[#2C2C2C] hover:bg-[#444444] border border-[#444444] rounded-lg transition-all"
+                  className="flex items-center gap-2 px-4 py-2 text-white bg-[#2C2C2C] hover:bg-[#D4AF37] hover:border-[#D4AF37] border border-[#444444] rounded-lg transition-all"
                   variant="outline"
                 >
                   <Edit size={20} /> Reservar
@@ -48,7 +48,7 @@ export async function NavBar({ user }: { user: User | null }) {
               </Link>
               <Link href="/perfil">
                 <Button
-                  className="flex items-center gap-2 px-4 py-2 text-white bg-[#2C2C2C] hover:bg-[#444444] border border-[#444444] rounded-lg transition-all"
+                  className="flex items-center gap-2 px-4 py-2 text-white bg-[#2C2C2C] hover:bg-[#D4AF37] hover:border-[#D4AF37] border border-[#444444] rounded-lg transition-all"
                   variant="outline"
                 >
                   <User2Icon size={20} /> Perfil
@@ -57,6 +57,7 @@ export async function NavBar({ user }: { user: User | null }) {
             </>
           )}
         </div>
+
 
         {/* Menú de usuario */}
         <DropdownMenu>
@@ -86,7 +87,7 @@ export async function NavBar({ user }: { user: User | null }) {
               <div className="flex flex-col items-start px-2">
                 <Link href="/perfil" className="w-full">
                   <Button
-                    className="w-full justify-start text-gray-300 hover:text-[#D4AF37] transition-all"
+                    className="w-full justify-start text-gray-300 hover:bg-[#D4AF37] hover:border-[#D4AF37] border border-[#444444] rounded-lg transition-all"
                     variant="ghost"
                   >
                     <List size={20} className="mr-2" /> Mis Turnos

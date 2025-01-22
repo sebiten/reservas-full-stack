@@ -28,7 +28,6 @@ export interface Reserva {
 export default function Reserva() {
   const supabase = createClient();
   const { toast } = useToast();
-
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -55,6 +54,8 @@ export default function Reserva() {
       }
 
       const email = data.user.email;
+      console.log("email desde cliente handlesubmit", email);
+
       const reservaData: Reserva = {
         date: date!,
         name,
@@ -87,6 +88,7 @@ export default function Reserva() {
             service,
             servicecount,
           }),
+
         });
 
         if (emailResponse.ok) {
@@ -150,19 +152,22 @@ export default function Reserva() {
   }, [date]);
 
   return (
-    <div className="flex flex-col items-center w-full h-screen justify-center py-10 px-4 sm:px-6 lg:px-8 bg-[#1A1A1A] text-gray-200">
-      <h1 className="text-4xl font-extrabold text-[#D4AF37] mb-10 text-center animate-fade-in">
-        Reserva tu turno ahora
-      </h1>
+    <div className="flex flex-col items-center w-full h-screen justify-center  px-4 sm:px-6 lg:px-8 bg-[#1A1A1A] text-gray-200">
 
-      <div className="flex flex-col lg:flex-row items-center justify-center gap-10 w-full max-w-5xl animate-slide-up">
+      <img className="object-cover h-60 w-60" src="/logopng.png" />
+
+
+      <div className="flex flex-col lg:flex-row items-start justify-center gap-2 w-full max-w-5xl animate-slide-up">
         {/* Calendario */}
-        <div className="mx-auto bg-[#2C2C2C] p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out">
+        <div className="mx-auto  bg-[#2C2C2C] p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out">
+          <h1 className="text-3xl font-extrabold text-[#D4AF37] mb-6 text-center animate-fade-in">
+            Reserva tu turno ahora
+          </h1>
           <Calendar
             mode="single"
             selected={date}
             onSelect={setDate}
-            className="rounded-lg border border-[#444444] shadow-sm text-white"
+            className="rounded-lg border border-[#444444] shadow-sm text-white w-fit mx-auto"
           />
         </div>
 

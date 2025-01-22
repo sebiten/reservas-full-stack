@@ -25,7 +25,7 @@ export default async function Home() {
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-[#1A1A1A] text-gray-200">
       {/* Fondo con degradado dinámico */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#2C2C2C] to-[#1A1A1A]"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-[#1A1A1A] to-[#2C2C2C] "></div>
 
       {/* Contenido principal */}
       <div className="relative flex flex-col items-center justify-center p-6 sm:p-10">
@@ -52,7 +52,7 @@ export default async function Home() {
 
           {/* Dashboard de usuario */}
           {user && (
-            <div className="flex flex-col text-center items-center gap-8 p-6 rounded-xl bg-[#2C2C2C] shadow-lg animate-fade-in-down">
+            <div className="flex flex-col text-center items-center gap-8 p-6 rounded-xl bg-gradient-to-br from-[#1A1A1A] to-[#2C2C2C] shadow-lg animate-fade-in-down">
               {/* Saludo y avatar */}
               <div className="flex flex-col items-center gap-4">
                 <Avatar className="w-28 h-28 shadow-md border-2 border-[#D4AF37]">
