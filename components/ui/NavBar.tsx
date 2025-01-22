@@ -25,7 +25,6 @@ export async function NavBar({ user }: { user: User | null }) {
             Logo
           </Link>
         </div>
-
         {/* Botones centrales */}
         <div className="hidden sm:flex items-center space-x-4">
           <Link href="/">
@@ -37,17 +36,26 @@ export async function NavBar({ user }: { user: User | null }) {
             </Button>
           </Link>
           {user && (
-            <Link href="/reserva">
-              <Button
-                className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-blue-700 border border-gray-300 rounded-lg transition-transform transform hover:scale-105"
-                variant="outline"
-              >
-                <Edit size={20} /> Reservar
-              </Button>
-            </Link>
+            <>
+              <Link href="/reserva">
+                <Button
+                  className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-blue-700 border border-gray-300 rounded-lg transition-transform transform hover:scale-105"
+                  variant="outline"
+                >
+                  <Edit size={20} /> Reservar
+                </Button>
+              </Link>
+              <Link href="/perfil">
+                <Button
+                  className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-blue-700 border border-gray-300 rounded-lg transition-transform transform hover:scale-105"
+                  variant="outline"
+                >
+                  <Edit size={20} /> Perfil
+                </Button>
+              </Link>
+            </>
           )}
         </div>
-
         {/* Menú de usuario */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

@@ -94,11 +94,13 @@ export default async function Home() {
               </div>
 
               {/* Promoción */}
-              {/* <div className="w-full text-center bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 p-6 rounded-lg shadow-md mt-6 animate-pulse">
+              <div className="w-full text-center bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 p-6 rounded-lg shadow-md mt-6 animate-pulse">
                 <p className="text-blue-800 text-lg font-semibold">
                   ¡Obtén un <span className="font-extrabold">20% de descuento</span> en tu primer corte si reservas esta semana!
                 </p>
-              </div> */}
+              </div>
+
+
 
               {/* Servicios destacados */}
               <div className="w-full flex flex-wrap justify-center gap-8 mt-10">

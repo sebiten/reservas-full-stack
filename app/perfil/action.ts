@@ -1,5 +1,5 @@
 "use server";
-
+import nodemailer from "nodemailer";
 import { redirect } from "next/navigation";
 import { Reserva } from "@/components/ui/Reserva";
 import { createClient } from "@/utils/supabase/server";
@@ -47,7 +47,7 @@ export async function photo(file: File) {
   return newAvatar?.publicUrl;
 }
 
-// Función para subir una reserva
+// Función para subir una reserva 
 export async function subirReserva({
   date,
   name,
@@ -55,6 +55,7 @@ export async function subirReserva({
   phone,
   hour,
   service,
+  servicecount,
 }: {
   date: Date;
   name: string;
@@ -62,12 +63,15 @@ export async function subirReserva({
   phone: string;
   hour: string;
   service: string;
+  servicecount: number | undefined;
 }) {
   try {
     // Crear el cliente de Supabase
     const supabase = createClient();
+
     // Convertir la fecha a formato 'YYYY-MM-DD'
     const formattedDate = date.toISOString().split("T")[0];
+
     // Verificar si ya existe una reserva para la misma fecha y hora
     const { data: existingReservation, error: errorFetch } = await (
       await supabase
@@ -77,11 +81,13 @@ export async function subirReserva({
       .eq("date", formattedDate)
       .eq("hour", hour)
       .limit(1);
+
     if (errorFetch) {
       throw new Error(
         `Error al verificar reserva existente: ${errorFetch.message}`
       );
     }
+
     // Si ya existe una reserva, devolver un mensaje de error
     if (existingReservation && existingReservation.length > 0) {
       return {
@@ -89,7 +95,23 @@ export async function subirReserva({
         message: "Ya existe una reserva para esta fecha y hora.",
       };
     }
-    // Insertar la nueva reserva en la tabla "reserva"
+
+    // Verificar si es la primera reserva del usuario según su email
+    const { data: userReservations, error: userError } = await (await supabase)
+      .from("reservas")
+      .select("*")
+      .eq("email", email);
+
+    if (userError) {
+      throw new Error(
+        `Error al verificar reservas del usuario: ${userError.message}`
+      );
+    }
+
+    const isFirstReservation =
+      !userReservations || userReservations.length === 0;
+
+    // Insertar la nueva reserva en la tabla "reservas"
     const { data, error } = await (
       await supabase
     )
@@ -102,15 +124,15 @@ export async function subirReserva({
           phone,
           hour,
           service,
+          servicecount: isFirstReservation ? 1 : (servicecount ?? 0) + 1,
         },
       ])
       .select();
 
-    // Recargar la página después de crear la reserva
-    revalidatePath("/");
-
     if (error) {
-      throw new Error(`Error al insertar reserva: ${error.message}`);
+      throw new Error(
+        `Error al insertar reserva: Ya tienes una reserva realizada, por favor cancela la anterior y realiza otra nuevamente.`
+      );
     }
 
     return { success: true, data };
@@ -141,12 +163,13 @@ export async function obtenerReservas(): Promise<Reserva[]> {
       email: reserva.email,
       phone: reserva.phone,
       service: reserva.service,
+      servicecount: reserva.servicecount,
     }));
   } catch (err: any) {
     throw new Error(`Error al obtener reservas: ${err.message}`);
   }
 }
-
+// Funcion para cancelar reserva
 export async function CancelarReserva(formData: FormData) {
   const id = formData.get("id");
   const supabase = createClient();
@@ -162,3 +185,13 @@ export async function CancelarReserva(formData: FormData) {
   return { success: true };
 }
 
+// Funcion para cancelar reserva admin
+export async function CancelarReservaAdmin(formData: FormData): Promise<void> {
+  const id = formData.get("id");
+  const supabase = createClient();
+
+  const { error } = await (await supabase)
+    .from("reservas")
+    .delete()
+    .eq("id", id);
+}
