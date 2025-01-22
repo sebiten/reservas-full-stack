@@ -23,15 +23,14 @@ export async function POST(req: Request) {
         pass: process.env.EMAIL_PASS!,
       },
     });
-    console.log("email desde la api", email)
     // Opciones del correo
     const mailOptions = {
       from: email,
       to: process.env.MAIL_RECEIVER_ADDRESS, // Enviar la confirmación al correo del usuario
       subject: `Confirmación de reserva para ${service}`,
-      text: `Hola ${name},\n\nTu reserva ha sido confirmada.\n\nDetalles:\n- Fecha: ${new Date(
+      text: `Hola,\n\nTu reserva ha sido confirmada.\n\nDetalles:\n- Fecha: ${new Date(
         date
-      ).toLocaleDateString()}\n- Hora: ${hour}\n- Teléfono: ${phone}\n- Servicio: ${service}\n- Cantidad: ${servicecount}\n\nGracias por confiar en nosotros.`,
+      ).toLocaleDateString()}\n-Nombre:${name}\n Hora: ${hour}\n- Teléfono: ${phone}\n- Servicio: ${service}\n- Cantidad: ${servicecount}\n\nGracias por confiar en nosotros.`,
     };
 
     // Enviar el correo

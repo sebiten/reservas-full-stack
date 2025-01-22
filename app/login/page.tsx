@@ -22,7 +22,7 @@ export default async function LoginPage() {
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#1A1A1A] text-gray-200 relative">
       {/* Fondo degradado */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1A1A1A] to-[#1A1A1A]"></div>
+      {/* <div className="absolute inset-0 bg-gradient-to-br from-[#1A1A1A] to-[#1A1A1A]"></div> */}
 
       {/* Tarjeta */}
       <Card className="relative w-full max-w-md mx-auto shadow-lg rounded-lg bg-[#2C2C2C] p-6 animate-fade-in">
