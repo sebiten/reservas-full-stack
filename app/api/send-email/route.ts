@@ -12,9 +12,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Faltan parámetros obligatorios." }, { status: 400 });
     }
 
-    // Log de datos recibidos
-    console.log("Datos recibidos en /api/send-email:", body);
-
     // Configuración del transporter de nodemailer
     const transporter = nodemailer.createTransport({
       service: "gmail",

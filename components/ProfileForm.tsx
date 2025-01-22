@@ -31,7 +31,6 @@ export default function ProfileForm({ userId }: { userId: string }) {
         .getPublicUrl(`public/${userId}/avatar.jpg`);
       if (data?.publicUrl) {
         setImageUrl(data.publicUrl);
-        console.log(data.publicUrl);
       }
     };
 
@@ -80,7 +79,6 @@ export default function ProfileForm({ userId }: { userId: string }) {
 
         // Notificar al padre sobre la nueva URL
         setImageUrl(imageUrl);
-        console.log("Imagen subida correctamente:", imageUrl);
       } catch (error) {
         if (error instanceof Error) {
           setErrorMessage("Error al subir la imagen: " + error.message);

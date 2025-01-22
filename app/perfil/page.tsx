@@ -5,9 +5,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import LogoutButton from "./LogoutButton";
 import { Button } from "@/components/ui/button";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, User2Icon } from "lucide-react";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { createClient } from "@/utils/supabase/client";
 import DownloadButton from "@/components/ui/DownloadButton";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -15,8 +14,9 @@ import { PDFViewer } from "@react-pdf/renderer";
 import BookingPDF from "@/components/ui/BookingPDF";
 import { User } from "@supabase/supabase-js";
 import { CancelarReserva } from "./action";
-
-
+import { AvatarImage } from "@radix-ui/react-avatar";
+import corteimg from "@/app/corte.webp"
+import Image from "next/image";
 interface Booking {
   id: number;
   service: string;
@@ -76,7 +76,6 @@ export default function Page() {
     fetchUserAndBookings();
   }, [fetchUserAndBookings]);
 
-  // cancelar reserva
   const handleCancel = async (formData: FormData) => {
     try {
       const response = await CancelarReserva(formData);
@@ -98,128 +97,114 @@ export default function Page() {
   const { user, bookingsData, selectedBooking, loading, first } = state;
 
   return (
-    <div className="relative h-full min-h-screen w-full mx-auto bg-gray-50 mt-4">
-    <div className="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-white"></div>
-    <div className="relative container mx-auto max-w-4xl p-6 flex flex-col items-center gap-8">
-      {/* Perfil del Usuario */}
-      <Card className="w-full max-w-5xl shadow-xl rounded-xl bg-white">
-        {loading ? (
-          <div className="p-6">
-            <Skeleton className="h-6 w-1/2 mb-4" /> {/* Nombre del usuario */}
-            <div className="flex items-center space-x-4 mt-4">
-              <Skeleton className="h-16 w-16 rounded-full" /> {/* Avatar */}
-              <div>
-                <Skeleton className="h-4 w-1/3 mb-2" /> {/* Metadata */}
-                <Skeleton className="h-4 w-1/4" /> {/* Badge */}
-              </div>
-            </div>
-          </div>
-        ) : (
-          <>
-            <CardHeader>
-              <div className="flex items-center space-x-4">
-                <Avatar className="w-16 h-16 shadow">
-                  <AvatarFallback>{state.user?.email?.[0]?.toUpperCase() || "?"}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <CardTitle className="text-2xl font-bold text-gray-800">
-                    {state.user?.user_metadata?.full_name || state.user?.email || "Usuario"}
-                  </CardTitle>
-                  <Badge variant="outline" className="text-sm mt-1">
-                    {state.first === 0 ? "Descuento Disponible (Primer Turno)" : "Cliente Regular"}
-                  </Badge>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="text-gray-600">
-              <p className="text-base">
-                ¡Bienvenido de nuevo! Aquí puedes ver tus turnos reservados y gestionar tu perfil.
-              </p>
-              <div className="w-full max-w-lg text-center animate-fade-in-up mt-2">
+    <div className="relative min-h-screen w-full bg-gradient-to-br from-[#1A1A1A] to-[#2C2C2C] text-gray-200">
+      {/* Header de Usuario */}
+      <header className="relative w-full bg-gradient-to-r from-[#333333] to-[#444444] py-8 px-6 shadow-md">
+        {/* Imagen de fondo */}
+        <img
+          src="/imgbg.webp"
+          alt="Fondo de barbería"
+          className="absolute inset-0 w-full h-full object-cover z-0 object-top"
+          loading="lazy"
+        />
+
+        {/* Overlay de gradiente */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-black/80 z-0"></div>
+
+        <div className="relative z-10 container mx-auto flex flex-col items-center text-center">
+          {loading ? (
+            <Skeleton className="h-10 w-1/2" />
+          ) : (
+            <>
+              <Avatar className="h-24 w-24 shadow-md my-2">
+                <AvatarImage
+                  src={user?.user_metadata?.avatar_url}
+                  alt="Avatar del usuario"
+                  className="object-cover"
+                />
+                <AvatarFallback>
+                  <User2Icon className="w-8 h-8 text-gray-500" />
+                </AvatarFallback>
+              </Avatar>
+              <h1 className="text-2xl font-semibold text-white">
+                Bienvenido a tu perfil! <br /> {user?.user_metadata?.full_name || user?.email || "Usuario"}
+              </h1>
+              <span className="mt-2 bg-[#D4AF37] text-black px-5 py-2 text-sm rounded-sm">
+                {first === 0 ? "Descuento Disponible (Primer Turno)" : "Cliente Regular"}
+              </span>
+              <div className="mt-4">
                 <LogoutButton />
               </div>
-            </CardContent>
-          </>
-        )}
-      </Card>
+            </>
+          )}
+        </div>
+      </header>
+
 
       {/* Turnos Reservados */}
-      <Card className="w-full max-w-4xl shadow-lg rounded-xl bg-white">
+      <main className="container mx-auto max-w-5xl p-6 space-y-6">
+        <h2 className="text-xl font-semibold text-white">Tus Turnos Reservados</h2>
         {loading ? (
-          <div className="p-6 space-y-4">
-            {[...Array(3)].map((_, index) => (
-              <div key={index} className="flex justify-between items-center">
-                <Skeleton className="h-6 w-1/3" /> {/* Texto del turno */}
-                <Skeleton className="h-6 w-1/4" /> {/* Botón */}
-              </div>
-            ))}
+          <Skeleton className="h-16 w-full" />
+        ) : bookingsData.length === 0 ? (
+          <div className="text-center text-gray-400">
+            <p>No tienes turnos reservados aún.</p>
+            <Button className="mt-4 bg-[#D4AF37] text-black hover:bg-[#E2C069]">
+              <Link href="/reserva">¡Reserva tu turno ahora!</Link>
+            </Button>
           </div>
         ) : (
-          <>
-            <CardHeader>
-              <CardTitle className="text-gray-800 text-xl font-semibold">Turnos Reservados</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {bookingsData.length === 0 ? (
-                <div className="text-center text-gray-500">
-                  <p>No tienes turnos reservados aún.</p>
-                  <Button className="mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                    <Link href="/reserva">¡Reserva tu turno ahora!</Link>
-                  </Button>
-                </div>
-              ) : (
-                bookingsData.map((booking) => (
-                  <div key={booking.id} className="flex justify-between items-center border-b pb-3">
-                    <div>
-                      <p className="font-medium text-gray-800">{booking.service}</p>
-                      <p className="text-sm text-gray-500">{booking.name}</p>
-                      <p className="text-sm text-gray-500">{booking.date}</p>
-                      <p className="text-sm text-gray-500">{booking.hour}</p>
-                    </div>
-                    <div className="flex flex-col gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {bookingsData.map((booking) => (
+              <Card key={booking.id} className="bg-[#2C2C2C] shadow-md hover:shadow-lg transition-all">
+                <CardContent className="p-4">
+                  <h3 className="text-lg font-bold text-white">{booking.service}</h3>
+                  <p className="text-sm text-gray-400">Nombre: {booking.name}</p>
+                  <p className="text-sm text-gray-400">Fecha: {booking.date}</p>
+                  <p className="text-sm text-gray-400">Hora: {booking.hour}</p>
+                  <div className="mt-4 flex justify-between">
+                    <Button
+                      size="sm"
+                      className="bg-gray-700 text-white hover:bg-gray-600"
+                      onClick={() => setState((prev) => ({ ...prev, selectedBooking: booking }))}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" /> Ver Detalles
+                    </Button>
+                    <form>
+                      <input type="hidden" name="id" value={booking.id} />
                       <Button
-                        variant="outline"
                         size="sm"
-                        onClick={() => setState((prev) => ({ ...prev, selectedBooking: booking }))}
+                        className="bg-red-600 text-white hover:bg-red-700"
+                        onClick={async () => {
+                          const formData = new FormData();
+                          formData.append("id", booking.id.toString());
+                          await handleCancel(formData);
+                        }}
                       >
-                        <CalendarIcon className="mr-2 h-4 w-4" /> Ver Detalles
+                        Cancelar Turno
                       </Button>
-                      <form>
-                        <input type="hidden" name="id" value={booking.id} />
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={async () => {
-                            const formData = new FormData();
-                            formData.append("id", booking.id.toString());
-                            await handleCancel(formData);
-                          }}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" /> Cancelar Turno
-                        </Button>
-                      </form>
-                    </div>
+                    </form>
                   </div>
-                ))
-              )}
-            </CardContent>
-          </>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         )}
-      </Card>
+      </main>
 
       {/* Visor de PDF */}
       {selectedBooking && (
-        <div className="w-full max-w-lg h-[500px] rounded-md shadow-lg">
-          <DownloadButton selectedBooking={selectedBooking} />
-          <Suspense fallback={<div>Cargando visor PDF...</div>}>
-            <PDFViewer width="100%" height="100%">
-              <BookingPDF booking={selectedBooking} />
-            </PDFViewer>
-          </Suspense>
+        <div className="w-full max-w-5xl mx-auto p-6">
+          <div className="bg-[#1A1A1A] shadow-md rounded-md p-4">
+            <DownloadButton selectedBooking={selectedBooking} />
+            <Suspense fallback={<div className="text-gray-400">Cargando visor PDF...</div>}>
+              <PDFViewer width="100%" height="500px">
+                <BookingPDF booking={selectedBooking} />
+              </PDFViewer>
+            </Suspense>
+          </div>
         </div>
       )}
     </div>
-  </div>
-
   );
 }

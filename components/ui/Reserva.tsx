@@ -28,79 +28,101 @@ export interface Reserva {
 export default function Reserva() {
   const supabase = createClient();
   const { toast } = useToast();
+
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [hour, setHour] = useState<string>("");
   const [service, setService] = useState<string>("");
-  const [servicecount, setServicecount] = useState<number>(0); // Inicializado en 0
+  const [servicecount, setServicecount] = useState<number>(0);
   const [disabledHours, setDisabledHours] = useState<string[]>([]);
 
-    // Declarar la función normal `handleSubmit`
-    async function handleSubmit(event: React.FormEvent) {
-      event.preventDefault();
-      try {
-        const { data, error } = await supabase.auth.getUser();
-        if (error || !data?.user?.email) {
-          toast({
-            title: "Error de autenticación",
-            description: "Debes estar autenticado para reservar.",
-            variant: "destructive",
-          });
-          return;
-        }
-        const email = data.user.email;
-        const reservaData: Reserva = {
-          date: date!,
-          name,
-          email,
-          phone,
-          hour,
-          service,
-          servicecount,
-        };
+  // Estado de carga
+  const [isLoading, setIsLoading] = useState(false);
 
-        const response = await subirReserva(reservaData);
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    setIsLoading(true); // Iniciamos la carga
+    try {
+      const { data, error } = await supabase.auth.getUser();
+      if (error || !data?.user?.email) {
+        toast({
+          title: "Error de autenticación",
+          description: "Debes estar autenticado para reservar.",
+          variant: "destructive",
+        });
+        return;
+      }
 
-        if (response.success) {
+      const email = data.user.email;
+      const reservaData: Reserva = {
+        date: date!,
+        name,
+        email,
+        phone,
+        hour,
+        service,
+        servicecount,
+      };
+
+      const response = await subirReserva(reservaData);
+
+      if (response.success) {
+        toast({
+          title: "Reserva creada exitosamente 🎉",
+          description: `Tu turno está reservado para ${date?.toLocaleDateString()} a las ${hour}.`,
+          variant: "default",
+        });
+
+        // Enviar el correo
+        const emailResponse = await fetch("/api/send-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            name,
+            date: date?.toISOString(),
+            hour,
+            phone,
+            service,
+            servicecount,
+          }),
+        });
+
+        if (emailResponse.ok) {
           toast({
-            title: "Reserva creada exitosamente 🎉",
-            description: `Tu turno está reservado para ${date?.toLocaleDateString()} a las ${hour}.`,
+            title: "Correo enviado ✉️",
+            description: "Se envió la confirmación de la reserva a tu correo.✅",
             variant: "default",
           });
-
-          await fetch("/api/send-email", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              email,
-              name,
-              date: date?.toISOString(),
-              hour,
-              phone,
-              service,
-              servicecount,
-            }),
-          });
         } else {
+          const errorData = await emailResponse.json();
           toast({
-            title: "Error al crear la reserva",
-            description: response.message,
+            title: "Error al enviar el correo",
+            description: errorData.error || "Algo salió mal al enviar el correo.",
             variant: "destructive",
           });
         }
-      } catch (error) {
-        console.error("Error al procesar la reserva:", error);
+      } else {
         toast({
-          title: "Error inesperado",
-          description: "No se pudo procesar tu reserva. Inténtalo de nuevo.",
+          title: "Error al crear la reserva",
+          description: response.message,
           variant: "destructive",
         });
       }
+    } catch (error) {
+      console.error("Error al procesar la reserva:", error);
+      toast({
+        title: "Error inesperado",
+        description: "No se pudo procesar tu reserva. Inténtalo de nuevo.",
+        variant: "destructive",
+      });
+    } finally {
+      // Finalizamos la carga, en el bloque finally para que ocurra pase lo que pase
+      setIsLoading(false);
     }
+  }
 
-
-  // Obtener reservas para deshabilitar fechas y horarios
   useEffect(() => {
     const fetchReservas = async () => {
       try {
@@ -127,40 +149,42 @@ export default function Reserva() {
     fetchReservas();
   }, [date]);
 
-
   return (
-    <div className="flex flex-col items-center w-full justify-center py-10 px-4 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold text-gray-800 mb-8 text-start animate-fade-in">
-        Reserva tu turno ahora!
+    <div className="flex flex-col items-center w-full h-screen justify-center py-10 px-4 sm:px-6 lg:px-8 bg-[#1A1A1A] text-gray-200">
+      <h1 className="text-4xl font-extrabold text-[#D4AF37] mb-10 text-center animate-fade-in">
+        Reserva tu turno ahora
       </h1>
 
       <div className="flex flex-col lg:flex-row items-center justify-center gap-10 w-full max-w-5xl animate-slide-up">
-        <div className="mx-auto bg-white p-4 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out">
+        {/* Calendario */}
+        <div className="mx-auto bg-[#2C2C2C] p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out">
           <Calendar
             mode="single"
             selected={date}
             onSelect={setDate}
-            className="rounded-lg border shadow-sm"
+            className="rounded-lg border border-[#444444] shadow-sm text-white"
           />
         </div>
+
+        {/* Formulario */}
         <form
           onSubmit={handleSubmit}
-          className="w-full lg:w-1/2 space-y-6 bg-white p-8 rounded-lg shadow-lg transition-all hover:shadow-2xl duration-300 ease-in-out"
+          className="w-full lg:w-1/2 space-y-6 bg-[#2C2C2C] p-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
         >
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-400">
               Fecha seleccionada
             </label>
             <input
               type="text"
               value={date ? date.toISOString().split("T")[0] : ""}
               readOnly
-              className="mt-2 p-3 border rounded-lg w-full bg-gray-100 text-gray-700 focus:ring-2 focus:ring-blue-500"
+              className="mt-2 p-3 border border-[#444444] rounded-lg w-full bg-[#1A1A1A] text-gray-300 focus:ring-2 focus:ring-[#D4AF37]"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-400">
               Nombre del paciente
             </label>
             <input
@@ -168,13 +192,13 @@ export default function Reserva() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Tu nombre completo"
-              className="mt-2 p-3 border rounded-lg w-full focus:ring-2 focus:ring-blue-500"
+              className="mt-2 p-3 border border-[#444444] rounded-lg w-full bg-[#1A1A1A] text-gray-300 focus:ring-2 focus:ring-[#D4AF37]"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-400">
               Teléfono
             </label>
             <input
@@ -182,17 +206,17 @@ export default function Reserva() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="Ej: 123-456-7890"
-              className="mt-2 p-3 border rounded-lg w-full focus:ring-2 focus:ring-blue-500"
+              className="mt-2 p-3 border border-[#444444] rounded-lg w-full bg-[#1A1A1A] text-gray-300 focus:ring-2 focus:ring-[#D4AF37]"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-400">
               Servicio odontológico
             </label>
             <Select onValueChange={setService}>
-              <SelectTrigger className="mt-2 w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500">
+              <SelectTrigger className="mt-2 w-full p-3 border border-[#444444] rounded-lg bg-[#1A1A1A] text-gray-300 focus:ring-2 focus:ring-[#D4AF37]">
                 <SelectValue placeholder="Selecciona un servicio" />
               </SelectTrigger>
               <SelectContent>
@@ -204,12 +228,13 @@ export default function Reserva() {
               </SelectContent>
             </Select>
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-400">
               Horario
             </label>
             <Select onValueChange={setHour}>
-              <SelectTrigger className="mt-2 w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500">
+              <SelectTrigger className="mt-2 w-full p-3 border border-[#444444] rounded-lg bg-[#1A1A1A] text-gray-300 focus:ring-2 focus:ring-[#D4AF37]">
                 <SelectValue placeholder="Selecciona un horario" />
               </SelectTrigger>
               <SelectContent>
@@ -225,18 +250,22 @@ export default function Reserva() {
               </SelectContent>
             </Select>
           </div>
+
+          {/* Botón de reservar con estado de carga */}
           <Button
             type="submit"
-            className="w-full py-3 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition-all duration-200"
+            className="w-full py-3 bg-[#D4AF37] text-black rounded-lg shadow-md hover:bg-[#E2C069] transition-all duration-200 transform hover:scale-105"
+            disabled={isLoading} // Deshabilitamos mientras está cargando
           >
-            Reservar
+            {isLoading ? "Enviando Reserva..." : "Reservar"}
           </Button>
 
+          {/* Botón de ver turnos */}
           <Link href="/perfil">
             <Button
               type="button"
               variant="outline"
-              className="w-full py-3 rounded-lg hover:bg-gray-100"
+              className="w-full py-3 mt-2 rounded-lg bg-inherit border border-[#444444] text-gray-300 hover:bg-[#444444] hover:text-[#D4AF37] transition-all"
             >
               Ver mis turnos
             </Button>

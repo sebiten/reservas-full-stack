@@ -26,7 +26,6 @@ export const forgotPassword = async ({ email }: { email: string }) => {
 
   const { error } = await (await supabase).auth.resetPasswordForEmail(email);
 
-  console.log("err: ", error);
   // if (error === null) {
   //   return {
   //     error: true,

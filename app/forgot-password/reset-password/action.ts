@@ -37,8 +37,6 @@ export const resetPasswordFunc = async ({
     password: password,
   });
 
-  console.log("data : ", data);
-
   if (error) {
     return {
       error: true,

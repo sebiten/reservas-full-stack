@@ -5,5 +5,5 @@ import { logout } from "./action";
 import { DoorClosed, DoorClosedIcon, LogOut } from "lucide-react";
 
 export default function LogoutButton() {
-  return <Button className="flex gap-1 bg-black" onClick={() => logout()}> <LogOut size={17}/>Cerrar Sesión</Button>;
+  return <Button className="flex gap-1 bg-inherit" onClick={() => logout()}> <LogOut size={17}/>Cerrar Sesión</Button>;
 }
