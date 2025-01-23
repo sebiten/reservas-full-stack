@@ -40,8 +40,7 @@ export default async function Home() {
               </CardHeader>
               <CardContent className="text-center text-gray-400">
                 <p className="text-lg">
-                  Inicia sesión para acceder a los mejores cortes y servicios
-                  exclusivos.
+                  Inicia sesión para acceder a los mejores cortes y servicios.
                 </p>
               </CardContent>
               <CardFooter className="flex justify-center">
