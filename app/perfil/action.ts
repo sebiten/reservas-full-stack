@@ -47,7 +47,7 @@ export async function photo(file: File) {
   return newAvatar?.publicUrl;
 }
 
-// Función para subir una reserva 
+// Función para subir una reserva
 export async function subirReserva({
   date,
   name,
@@ -185,13 +185,71 @@ export async function CancelarReserva(formData: FormData) {
   return { success: true };
 }
 
-// Funcion para cancelar reserva admin
 export async function CancelarReservaAdmin(formData: FormData): Promise<void> {
   const id = formData.get("id");
+
+  if (!id) {
+    console.error("Error: ID no proporcionado.");
+    return;
+  }
+
   const supabase = createClient();
 
-  const { error } = await (await supabase)
+  // Obtener la información de la reserva antes de eliminarla
+  const { data: reserva, error: fetchError } = await (await supabase)
+    .from("reservas")
+    .select("name, email, service, date, hour")
+    .eq("id", id)
+    .single();
+
+  if (fetchError) {
+    console.error("Error obteniendo la reserva:", fetchError.message);
+    return;
+  }
+
+  // Eliminar la reserva
+  const { error: deleteError } = await (await supabase)
     .from("reservas")
     .delete()
     .eq("id", id);
+  revalidatePath("/admin");
+
+  if (deleteError) {
+    console.error("Error al cancelar la reserva:", deleteError.message);
+    return;
+  }
+
+  // Configurar el transporter de nodemailer
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.EMAIL_USER!,
+      pass: process.env.EMAIL_PASS!,
+    },
+  });
+
+  // Opciones del correo
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: reserva?.email, // Correo del usuario
+    subject: `Cancelación de reserva para ${reserva?.service}`,
+    text: `Hola ${
+      reserva?.name
+    },\n\nTu reserva ha sido cancelada con éxito.\n\nDetalles de la reserva cancelada:\n- Servicio: ${
+      reserva?.service
+    }\n- Fecha: ${new Date(reserva?.date).toLocaleDateString()}\n- Hora: ${
+      reserva?.hour
+    }\n\nGracias por tu comprensión.`,
+  };
+
+  try {
+    // Enviar el correo
+    await transporter.sendMail(mailOptions);
+    console.log("Correo de cancelación enviado con éxito.");
+  } catch (error: any) {
+    console.error("Error enviando el correo de cancelación:", error.message);
+  }
 }

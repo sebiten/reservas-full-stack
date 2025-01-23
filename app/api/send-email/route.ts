@@ -11,7 +11,6 @@ export async function POST(req: Request) {
     if (!email || !name || !date || !hour || !phone || !service || servicecount === undefined) {
       return NextResponse.json({ success: false, error: "Faltan parámetros obligatorios." }, { status: 400 });
     }
-
     // Configuración del transporter de nodemailer
     const transporter = nodemailer.createTransport({
       service: "gmail",
