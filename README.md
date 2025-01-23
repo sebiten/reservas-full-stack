@@ -1,5 +1,5 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
+Aplicación Full-Stack para la gestión de reservas en barberías, consultorios y otros servicios. Incluye generación dinámica de PDF y envío automatizado de correos electrónicos tanto al cliente como al profesional (barbero, médico, entre otros).
 ## Getting Started
 
 First, run the development server:
