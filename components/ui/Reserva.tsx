@@ -18,7 +18,15 @@ import { Button } from "./button";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from 'next/navigation'
 // Esquema de validación con zod
-
+export interface Reserva {
+  date: Date;
+  name: string;
+  email: string;
+  phone: string;
+  hour: string;
+  service: string;
+  servicecount: number;
+}
 const mailFormSchema = z.object({
   date: z.string().min(1, "La fecha es obligatoria"),
   name: z

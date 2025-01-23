@@ -1,9 +1,9 @@
 "use server";
 import nodemailer from "nodemailer";
 import { redirect } from "next/navigation";
-import { Reserva } from "@/components/ui/Reserva";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { Reserva } from "@/components/ui/Reserva";
 
 // Función para cerrar sesión
 export async function logout() {
