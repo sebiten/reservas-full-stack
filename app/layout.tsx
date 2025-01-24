@@ -17,10 +17,10 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Aplicacion de turnos",
+  title: "Barberia Elite",
   description: "Apliacion de reservas de turnos.",
   icons: {
-    icon: "/favicon.ico"
+    icon: "/logopng.png"
   }
 };
 
@@ -37,6 +37,9 @@ export default async function RootLayout({
 
   return (
     <html className="background" lang="en">
+      {/* <head>
+        <link rel="icon" href="/logopng.png" />
+      </head> */}
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >

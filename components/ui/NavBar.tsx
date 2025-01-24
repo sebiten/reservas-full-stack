@@ -22,7 +22,7 @@ export async function NavBar({ user }: { user: User | null }) {
             href="/"
             className="text-2xl font-extrabold text-white hover:text-[#D4AF37] transition-all"
           >
-            <img className="object-cover sm:h-20 sm:w-20 h-14 w-14 mx-auto" src="/logopng.png" />
+            <img className="object-cover sm:h-20 sm:w-20 h-12 w-12 mx-auto" src="/logopng.png" />
           </Link>
         </div>
 
@@ -66,7 +66,7 @@ export async function NavBar({ user }: { user: User | null }) {
               variant="ghost"
               className="flex items-center justify-center gap-2 rounded-full p-1 hover:bg-[#444444] transition-transform transform hover:scale-105"
             >
-              <Avatar className="h-10 w-10 mx-auto shadow-md">
+              <Avatar className="h-10 w-10 mx-auto shadow-md mr-1">
                 <AvatarImage
                   src={user?.user_metadata?.avatar_url || "https://github.com/shadcn.png"}
                   alt="Avatar del usuario"

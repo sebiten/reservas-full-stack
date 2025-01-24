@@ -64,11 +64,11 @@ export default async function Home() {
                     <User2Icon className="w-10 h-10 text-gray-400" />
                   </AvatarFallback>
                 </Avatar>
-                <h2 className="text-3xl font-bold text-gray-100">
+                <h2 className="text-2xl font-bold text-gray-100">
                   ¡Hola, {user.user_metadata.full_name || user.email} 👋!
                 </h2>
                 <p className="text-gray-400 mt-2 text-lg">
-                  ¿Listo para un nuevo corte? Te esperamos con estilo.
+                  ¿Listo para un nuevo corte? <br></br>En Barbería Elite tenemos el mejor servicio para brindarte.
                 </p>
               </div>
 
@@ -87,7 +87,7 @@ export default async function Home() {
               </div>
 
               {/* Promoción */}
-              <div className="relative w-10/12 text-center mt-6">
+              <div className="relative w-11/12 text-center mt-6">
                 <div className="absolute inset-0 bg-[url('/bg.webp')] object-center bg-cover  bg-center opacity-10 rounded-lg shadow-md "></div>
                 <div className="relative p-6">
                   <p className="text-[#D4AF37] text-lg font-semibold">
@@ -100,11 +100,11 @@ export default async function Home() {
 
 
               {/* Servicios destacados */}
-              <div className="w-full flex flex-wrap justify-center gap-8 mt-10">
-                <div className="p-6 rounded-lg bg-[#2C2C2C] shadow-lg transform transition-transform hover:scale-105 hover:shadow-xl">
+              <div className="w-full flex flex-wrap justify-center gap-10 mt-10">
+                <div className="p-10 rounded-lg bg-[#2C2C2C] shadow-lg transform transition-transform hover:scale-105 hover:shadow-xl">
                   <Image
-                    width={300}
-                    height={300}
+                    width={350}
+                    height={350}
                     src={corte}
                     alt="Corte Clásico"
                     className="w-full h-40 object-cover rounded-lg mb-4"
@@ -116,8 +116,8 @@ export default async function Home() {
                 </div>
                 <div className="p-6 rounded-lg bg-[#2C2C2C] shadow-lg transform transition-transform hover:scale-105 hover:shadow-xl">
                   <Image
-                    width={300}
-                    height={300}
+                    width={350}
+                    height={350}
                     src={barba}
                     alt="Barba Premium"
                     className="w-full h-40 object-cover rounded-lg mb-4"
@@ -130,8 +130,8 @@ export default async function Home() {
                 <div className="p-6 rounded-lg bg-[#2C2C2C] shadow-lg transform transition-transform hover:scale-105 hover:shadow-xl">
                   <Image
                     src={spa}
-                    width={300}
-                    height={300}
+                    width={350}
+                    height={350}
                     alt="Spa Capilar"
                     className="w-full h-40 object-cover rounded-lg mb-4"
                   />

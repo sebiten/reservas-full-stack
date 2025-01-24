@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import GoogleSignin from "./GoogleSignin";
 import LoginForm from "./LoginForm";
+import Link from "next/link";
 
 export default async function LoginPage() {
   const supabase = createClient();
@@ -46,6 +47,12 @@ export default async function LoginPage() {
             <>
               <GoogleSignin />
               <LoginForm />
+              <div className="text-muted-foreground text-sm">
+                No tienes cuenta?{" "}
+                <Link href="/register" className="underline">
+                  Registrarse
+                </Link>
+              </div>
             </>
           )}
         </CardFooter>
