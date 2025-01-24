@@ -15,15 +15,16 @@ import BookingPDF from "@/components/ui/BookingPDF";
 import { User } from "@supabase/supabase-js";
 import { CancelarReserva } from "./action";
 import { AvatarImage } from "@radix-ui/react-avatar";
-import corteimg from "@/app/corte.webp"
 import Image from "next/image";
+import { isFirstTime } from "../admin/actions";
+import { PersonIcon } from "@radix-ui/react-icons";
 interface Booking {
   id: number;
   service: string;
   name: string;
   date: string;
   hour: string | number;
-  servicecount: number;
+  status: string;
 }
 
 export default function Page() {
@@ -32,14 +33,29 @@ export default function Page() {
     bookingsData: Booking[];
     selectedBooking: Booking | null;
     loading: boolean;
-    first: number;
   }>({
     user: null,
     bookingsData: [],
     selectedBooking: null,
     loading: true,
-    first: 0,
   });
+  const [isFirst, setIsFirst] = useState<boolean | null>(null);
+  console.log(isFirst);
+
+
+  // Llamada al server action
+  useEffect(() => {
+    const fetchIsFirstTime = async () => {
+      try {
+        const result = await isFirstTime();
+        setIsFirst(result);
+      } catch (error) {
+        console.error("Error obteniendo el estado de isFirstTime:", error);
+      }
+    };
+
+    fetchIsFirstTime();
+  }, []);
 
   const supabase = createClient();
   const fetchUserAndBookings = useCallback(async () => {
@@ -54,14 +70,12 @@ export default function Page() {
 
         if (error) throw new Error(error.message);
 
-        const isFirst = bookings?.some((booking) => booking.servicecount === 1);
 
         setState({
           user,
           bookingsData: bookings || [],
           selectedBooking: null,
           loading: false,
-          first: isFirst ? 1 : 0,
         });
       } else {
         setState((prev) => ({ ...prev, loading: false }));
@@ -94,117 +108,149 @@ export default function Page() {
     }
   };
 
-  const { user, bookingsData, selectedBooking, loading, first } = state;
+  const { user, bookingsData, selectedBooking, loading } = state;
   return (
-    <div className="relative min-h-screen w-full bg-gradient-to-br from-[#1A1A1A] to-[#2C2C2C] text-gray-200">
-      {/* Header de Usuario */}
-      <header className="relative w-full bg-gradient-to-r from-[#333333] to-[#444444] py-8 px-6 shadow-md">
-        <img
-          src="/imgbg.webp"
-          alt="Fondo de barbería"
-          className="absolute inset-0 w-full h-full object-cover z-0 object-top"
-          loading="lazy"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-black/80 z-0"></div>
-        <div className="relative z-10 container mx-auto flex flex-col items-center text-center">
+    <div className="relative min-h-screen w-full mx-auto bg-gradient-to-br from-[#1A1A1A] to-[#2C2C2C] text-gray-200 flex flex-col lg:flex-row">
+      {/* Sidebar para Reservas Completadas */}
+
+
+      {/* Contenido principal */}
+      <div className="flex-1">
+        {/* Header de Usuario */}
+        <header className="relative w-full bg-gradient-to-r from-[#333333] to-[#444444] py-8 px-6 shadow-md">
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-black/80 z-0">
+            <img src="/bg2.webp" className="object-cover w-full h-full opacity-20 object-top" />
+          </div>
+          <div className="relative z-10 container mx-auto flex flex-col items-center text-center">
+            {loading ? (
+              <div className="flex flex-col items-center space-y-4">
+                <Skeleton className="h-24 w-24 rounded-full" />
+                <Skeleton className="h-6 w-1/2" />
+                <Skeleton className="h-4 w-1/3" />
+              </div>
+            ) : (
+              <>
+                <Avatar className="h-24 w-24 shadow-md my-2">
+                  <AvatarImage
+                    src={user?.user_metadata?.avatar_url || "https://github.com/shadcn.png"}
+                    alt="Avatar del usuario"
+                    className="object-cover"
+                  />
+                  <AvatarFallback>
+                    <User2Icon className="w-8 h-8 text-gray-500" />
+                  </AvatarFallback>
+                </Avatar>
+                <h1 className="text-2xl font-semibold text-white">
+                  Hola, {user?.user_metadata?.full_name || user?.email || "Usuario"} 👋
+                </h1>
+                <span className="mt-2 bg-[#D4AF37] text-black px-5 py-2 text-sm rounded-sm">
+                  {isFirst ? "¡Es tu primera vez aquí!" : "Cliente recurrente"}
+                </span>
+                <div className="mt-4">
+                  <LogoutButton />
+                </div>
+              </>
+            )}
+          </div>
+        </header>
+
+        {/* Turnos Reservados */}
+        <main className="container mx-auto max-w-5xl p-6 space-y-6">
+          <h2 className="text-xl font-semibold text-white">Tus Turnos Reservados</h2>
           {loading ? (
-            <div className="flex flex-col items-center space-y-4">
-              <Skeleton className="h-24 w-24 rounded-full" />
-              <Skeleton className="h-6 w-1/2" />
-              <Skeleton className="h-4 w-1/3" />
+            Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-16 w-full mb-4" />
+            ))
+          ) : bookingsData.filter((booking) => booking.status === "pending").length === 0 ? (
+            <div className="text-center text-gray-400">
+              <p>No tienes turnos reservados aún.</p>
+              <Button className="mt-4 bg-[#D4AF37] text-black hover:bg-[#E2C069]">
+                <Link href="/reserva">¡Reserva tu turno ahora!</Link>
+              </Button>
             </div>
           ) : (
-            <>
-              <Avatar className="h-24 w-24 shadow-md my-2">
-                <AvatarImage
-                  src={user?.user_metadata?.avatar_url}
-                  alt="Avatar del usuario"
-                  className="object-cover"
-                />
-                <AvatarFallback>
-                  <User2Icon className="w-8 h-8 text-gray-500" />
-                </AvatarFallback>
-              </Avatar>
-              <h1 className="text-2xl font-semibold text-white">
-                Bienvenido a tu perfil! <br /> {user?.user_metadata?.full_name || user?.email || "Usuario"}
-              </h1>
-              <span className="mt-2 bg-[#D4AF37] text-black px-5 py-2 text-sm rounded-sm">
-                {first === 0 ? "Descuento Disponible (Primer Turno)" : "Cliente Regular"}
-              </span>
-              <div className="mt-4">
-                <LogoutButton />
-              </div>
-            </>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {bookingsData
+                .filter((booking) => booking.status === "pending") // Mostrar solo reservas pendientes
+                .map((booking) => (
+                  <Card
+                    key={booking.id}
+                    className="bg-[#2C2C2C] shadow-md hover:shadow-lg transition-all"
+                  >
+                    <CardContent className="p-4">
+                      <h3 className="text-lg font-bold text-white">{booking.service}</h3>
+                      <p className="text-sm text-gray-400">Nombre: {booking.name}</p>
+                      <p className="text-sm text-gray-400">Fecha: {booking.date}</p>
+                      <p className="text-sm text-gray-400">Estado: Pendiente</p>
+                      <p className="text-sm text-gray-400">Hora: {booking.hour}</p>
+                      <div className="mt-4 flex justify-between">
+                        <Button
+                          size="sm"
+                          className="bg-gray-700 text-white hover:bg-gray-600"
+                          onClick={() => setState((prev) => ({ ...prev, selectedBooking: booking }))}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" /> Ver Detalles
+                        </Button>
+                        <form>
+                          <input type="hidden" name="id" value={booking.id} />
+                          <Button
+                            size="sm"
+                            className="bg-red-600 text-white hover:bg-red-700"
+                            onClick={async () => {
+                              const formData = new FormData();
+                              formData.append("id", booking.id.toString());
+                              await handleCancel(formData);
+                            }}
+                          >
+                            Cancelar Turno
+                          </Button>
+                        </form>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+            </div>
           )}
-        </div>
-      </header>
+        </main>
 
-      {/* Turnos Reservados */}
-      <main className="container mx-auto max-w-5xl p-6 space-y-6">
-        <h2 className="text-xl font-semibold text-white">Tus Turnos Reservados</h2>
+      </div>
+      <aside className="lg:w-1/4 w-full bg-[#2C2C2C] border-b lg:border-r border-[#444444] shadow-lg p-4">
+        <h2 className="text-xl font-semibold text-center text-[#D4AF37] mb-4">
+          Reservas Completadas
+        </h2>
         {loading ? (
           Array.from({ length: 3 }).map((_, i) => (
             <Skeleton key={i} className="h-16 w-full mb-4" />
           ))
-        ) : bookingsData.length === 0 ? (
-          <div className="text-center text-gray-400">
-            <p>No tienes turnos reservados aún.</p>
-            <Button className="mt-4 bg-[#D4AF37] text-black hover:bg-[#E2C069]">
-              <Link href="/reserva">¡Reserva tu turno ahora!</Link>
-            </Button>
-          </div>
+        ) : bookingsData.filter((booking) => booking.status === "completed").length === 0 ? (
+          <p className="text-sm text-gray-400 text-center">
+            No tienes reservas completadas aún.
+          </p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {bookingsData.map((booking) => (
-              <Card key={booking.id} className="bg-[#2C2C2C] shadow-md hover:shadow-lg transition-all">
-                <CardContent className="p-4">
-                  <h3 className="text-lg font-bold text-white">{booking.service}</h3>
-                  <p className="text-sm text-gray-400">Nombre: {booking.name}</p>
-                  <p className="text-sm text-gray-400">Fecha: {booking.date}</p>
-                  <p className="text-sm text-gray-400">Hora: {booking.hour}</p>
-                  <div className="mt-4 flex justify-between">
-                    <Button
-                      size="sm"
-                      className="bg-gray-700 text-white hover:bg-gray-600"
-                      onClick={() => setState((prev) => ({ ...prev, selectedBooking: booking }))}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" /> Ver Detalles
-                    </Button>
-                    <form>
-                      <input type="hidden" name="id" value={booking.id} />
-                      <Button
-                        size="sm"
-                        className="bg-red-600 text-white hover:bg-red-700"
-                        onClick={async () => {
-                          const formData = new FormData();
-                          formData.append("id", booking.id.toString());
-                          await handleCancel(formData);
-                        }}
-                      >
-                        Cancelar Turno
-                      </Button>
-                    </form>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <ul className="space-y-4">
+            {bookingsData
+              .filter((booking) => booking.status === "completed") // Mostrar solo reservas completadas
+              .map((booking) => (
+                <li
+                  key={booking.id}
+                  className="p-4 bg-[#1A1A1A] rounded-lg shadow hover:shadow-md transition-all"
+                >
+                  <p className="text-sm text-gray-400">
+                    Servicio: <span className="text-white">{booking.service}</span>
+                  </p>
+                  <p className="text-sm text-gray-400">
+                    Fecha: <span className="text-white">{booking.date}</span>
+                  </p>
+                  <p className="text-sm text-gray-400">
+                    Hora: <span className="text-white">{booking.hour}</span>
+                  </p>
+                </li>
+              ))}
+          </ul>
         )}
-      </main>
-
-      {/* Visor de PDF */}
-      {selectedBooking && (
-        <div className="w-full max-w-5xl mx-auto p-6">
-          <div className="bg-[#1A1A1A] shadow-md rounded-md p-4">
-            <DownloadButton selectedBooking={selectedBooking} />
-            <Suspense fallback={<Skeleton className="h-96 w-full" />}>
-              <PDFViewer width="100%" height="500px">
-                <BookingPDF booking={selectedBooking} />
-              </PDFViewer>
-            </Suspense>
-          </div>
-        </div>
-      )}
+      </aside>
     </div>
+
+
   );
 }

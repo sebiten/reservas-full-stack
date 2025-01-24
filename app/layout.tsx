@@ -36,9 +36,9 @@ export default async function RootLayout({
   } = await (await supabase).auth.getUser();
 
   return (
-    <html lang="en">
+    <html className="background" lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased absolute inset-0 bg-gradient-to-b from-black/80 to-black/80 z-0`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
         <NavBar user={user!} />
         <main>

@@ -25,7 +25,6 @@ export interface Reserva {
   phone: string;
   hour: string;
   service: string;
-  servicecount: number;
 }
 const mailFormSchema = z.object({
   date: z.string().min(1, "La fecha es obligatoria"),
@@ -114,7 +113,7 @@ export default function Reserva() {
         return;
       }
 
-      // Convertir `data.date` en un objeto Date y asignar `servicecount`
+      // Convertir `data.date` en un objeto Date y asignar el correo del usuario`
       const reservaData = {
         date: new Date(data.date), // Convertimos `string` a `Date`
         name: data.name,
@@ -122,10 +121,9 @@ export default function Reserva() {
         phone: data.phone,
         hour: data.hour,
         service: data.service,
-        servicecount: 1, // Cambia este valor según la lógica que manejes
       };
 
-      // Subir la reserva a la base de datos
+      // Subir la reserva a la base de datos desde el server action
       const response = await subirReserva(reservaData);
       if (response.success) {
         // Notificar al usuario sobre el éxito
@@ -147,7 +145,6 @@ export default function Reserva() {
               hour: data.hour,
               phone: data.phone,
               service: data.service,
-              servicecount: 1, // Asegúrate de usar el mismo valor de `servicecount`
             }),
           });
 
@@ -196,7 +193,7 @@ export default function Reserva() {
 
 
   return (
-    <div className="flex flex-col items-center w-full h-screen justify-center px-4 sm:px-6 lg:px-8 bg-[#1A1A1A] text-gray-200">
+    <div className="flex flex-col items-center w-full h-full justify-center px-4 sm:px-6 lg:px-8 bg-[#1A1A1A] text-gray-200">
       <img className="object-cover h-60 w-60" src="/logopng.png" />
 
       <div className="flex flex-col lg:flex-row items-start justify-center gap-2 w-full max-w-5xl">

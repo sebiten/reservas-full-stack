@@ -54,11 +54,9 @@ export default async function Home() {
             <div className="flex flex-col text-center items-center gap-8 p-6 rounded-xl bg-gradient-to-br from-[#1A1A1A] to-[#2C2C2C] shadow-lg animate-fade-in-down">
               {/* Saludo y avatar */}
               <div className="flex flex-col items-center gap-4">
-                <Avatar className="w-28 h-28 shadow-md border-2 border-[#D4AF37]">
+                <Avatar className="w-28 h-28 shadow-md">
                   <AvatarImage
-                    src={
-                      user.user_metadata.avatar_url || user.user_metadata.picture
-                    }
+                    src={user?.user_metadata?.avatar_url || "https://github.com/shadcn.png"}
                     alt="Avatar del usuario"
                     className="object-cover"
                   />
@@ -82,19 +80,24 @@ export default async function Home() {
                   </Button>
                 </Link>
                 <Link href="/perfil">
-                  <Button className="px-6 py-3 bg-inherit text-white rounded-lg shadow-md hover:bg-gray-900 transform transition-all duration-300 hover:scale-105">
+                  <Button variant={"ghost"} className="px-6 py-3 bg-inherit text-white rounded-lg shadow-md  transform transition-all duration-300 hover:scale-105">
                     Ver mis turnos
                   </Button>
                 </Link>
               </div>
 
               {/* Promoción */}
-              <div className="w-full text-center bg-gradient-to-r from-[#444444] to-[#2C2C2C] p-6 rounded-lg shadow-md mt-6 animate-pulse">
-                <p className="text-[#D4AF37] text-lg font-semibold">
-                  ¡Obtén un <span className="font-extrabold">20% de descuento</span>{" "}
-                  en tu primer corte si reservas esta semana!
-                </p>
+              <div className="relative w-10/12 text-center mt-6">
+                <div className="absolute inset-0 bg-[url('/bg.webp')] object-center bg-cover  bg-center opacity-10 rounded-lg shadow-md "></div>
+                <div className="relative p-6">
+                  <p className="text-[#D4AF37] text-lg font-semibold">
+                    ¡Reservar es fácil! <span className="font-extrabold">Haz clic en "Reservar turno"</span>, elige el horario y consúltalo en tu perfil. Tras el corte, el barbero lo completará y estará en "Turnos completados".
+                  </p>
+                </div>
               </div>
+
+
+
 
               {/* Servicios destacados */}
               <div className="w-full flex flex-wrap justify-center gap-8 mt-10">

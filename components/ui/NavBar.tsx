@@ -14,7 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export async function NavBar({ user }: { user: User | null }) {
   return (
-    <nav className="sticky top-0 z-50 w-full bg-[#1A1A1A] border-[#444444] shadow-md">
+    <nav className="sticky top-0 z-50 w-full bg-[#1A1A1A]  shadow-md">
       <div className="container mx-auto flex items-center justify-between px-6 py-2">
         {/* Logo o sección izquierda */}
         <div className="flex items-center space-x-6">
@@ -22,7 +22,7 @@ export async function NavBar({ user }: { user: User | null }) {
             href="/"
             className="text-2xl font-extrabold text-white hover:text-[#D4AF37] transition-all"
           >
-            <img className="object-cover h-20 w-20" src="/logopng.png" />
+            <img className="object-cover sm:h-20 sm:w-20 h-14 w-14 mx-auto" src="/logopng.png" />
           </Link>
         </div>
 
@@ -64,11 +64,11 @@ export async function NavBar({ user }: { user: User | null }) {
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
-              className="flex items-center gap-2 rounded-full p-1 hover:bg-[#444444] transition-transform transform hover:scale-105"
+              className="flex items-center justify-center gap-2 rounded-full p-1 hover:bg-[#444444] transition-transform transform hover:scale-105"
             >
-              <Avatar className="h-10 w-10 shadow-md">
+              <Avatar className="h-10 w-10 mx-auto shadow-md">
                 <AvatarImage
-                  src={user?.user_metadata?.avatar_url}
+                  src={user?.user_metadata?.avatar_url || "https://github.com/shadcn.png"}
                   alt="Avatar del usuario"
                   className="object-cover"
                 />
@@ -84,13 +84,13 @@ export async function NavBar({ user }: { user: User | null }) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="border-[#444444]" />
             {user ? (
-              <div className="flex flex-col items-start px-2">
+              <div className="flex flex-col items-start px-2 gap-2">
                 <Link href="/perfil" className="w-full">
                   <Button
-                    className="w-full justify-start text-gray-300 hover:bg-[#D4AF37] hover:border-[#D4AF37] border border-[#444444] rounded-lg transition-all"
+                    className="w-full mt-2 justify-start text-gray-300 hover:bg-[#D4AF37] hover:border-[#D4AF37] border border-[#444444] rounded-lg transition-all"
                     variant="ghost"
                   >
-                    <List size={20} className="mr-2" /> Mis Turnos
+                    <List size={20} className="mr-2" /> Perfil
                   </Button>
                 </Link>
                 <form action={signOut} className="w-full">

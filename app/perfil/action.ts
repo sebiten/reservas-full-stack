@@ -55,7 +55,6 @@ export async function subirReserva({
   phone,
   hour,
   service,
-  servicecount,
 }: {
   date: Date;
   name: string;
@@ -63,7 +62,6 @@ export async function subirReserva({
   phone: string;
   hour: string;
   service: string;
-  servicecount: number | undefined;
 }) {
   try {
     // Crear el cliente de Supabase
@@ -124,7 +122,6 @@ export async function subirReserva({
           phone,
           hour,
           service,
-          servicecount: isFirstReservation ? 1 : (servicecount ?? 0) + 1,
         },
       ])
       .select();
@@ -163,7 +160,6 @@ export async function obtenerReservas(): Promise<Reserva[]> {
       email: reserva.email,
       phone: reserva.phone,
       service: reserva.service,
-      servicecount: reserva.servicecount,
     }));
   } catch (err: any) {
     throw new Error(`Error al obtener reservas: ${err.message}`);
@@ -185,71 +181,3 @@ export async function CancelarReserva(formData: FormData) {
   return { success: true };
 }
 
-export async function CancelarReservaAdmin(formData: FormData): Promise<void> {
-  const id = formData.get("id");
-
-  if (!id) {
-    console.error("Error: ID no proporcionado.");
-    return;
-  }
-
-  const supabase = createClient();
-
-  // Obtener la información de la reserva antes de eliminarla
-  const { data: reserva, error: fetchError } = await (await supabase)
-    .from("reservas")
-    .select("name, email, service, date, hour")
-    .eq("id", id)
-    .single();
-
-  if (fetchError) {
-    console.error("Error obteniendo la reserva:", fetchError.message);
-    return;
-  }
-
-  // Eliminar la reserva
-  const { error: deleteError } = await (await supabase)
-    .from("reservas")
-    .delete()
-    .eq("id", id);
-  revalidatePath("/admin");
-
-  if (deleteError) {
-    console.error("Error al cancelar la reserva:", deleteError.message);
-    return;
-  }
-
-  // Configurar el transporter de nodemailer
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: process.env.EMAIL_USER!,
-      pass: process.env.EMAIL_PASS!,
-    },
-  });
-
-  // Opciones del correo
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: reserva?.email, // Correo del usuario
-    subject: `Cancelación de reserva para ${reserva?.service}`,
-    text: `Hola ${
-      reserva?.name
-    },\n\nTu reserva ha sido cancelada con éxito.\n\nDetalles de la reserva cancelada:\n- Servicio: ${
-      reserva?.service
-    }\n- Fecha: ${new Date(reserva?.date).toLocaleDateString()}\n- Hora: ${
-      reserva?.hour
-    }\n\nGracias por tu comprensión.`,
-  };
-
-  try {
-    // Enviar el correo
-    await transporter.sendMail(mailOptions);
-    console.log("Correo de cancelación enviado con éxito.");
-  } catch (error: any) {
-    console.error("Error enviando el correo de cancelación:", error.message);
-  }
-}

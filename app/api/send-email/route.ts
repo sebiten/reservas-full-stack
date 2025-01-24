@@ -5,10 +5,10 @@ export async function POST(req: Request) {
   try {
     // Extraer y parsear el cuerpo de la solicitud
     const body = await req.json();
-    const { email, name, date, hour, phone, service, servicecount } = body;
+    const { email, name, date, hour, phone, service } = body;
 
     // Validar que todos los parámetros requeridos estén presentes
-    if (!email || !name || !date || !hour || !phone || !service || servicecount === undefined) {
+    if (!email || !name || !date || !hour || !phone || !service === undefined) {
       return NextResponse.json({ success: false, error: "Faltan parámetros obligatorios." }, { status: 400 });
     }
     // Configuración del transporter de nodemailer
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
       subject: `Confirmación de reserva para ${service}`,
       text: `Hola,\n\nTu reserva ha sido confirmada.\n\nDetalles:\n- Fecha: ${new Date(
         date
-      ).toLocaleDateString()}\n-Nombre:${name}\n Hora: ${hour}\n- Teléfono: ${phone}\n- Servicio: ${service}\n- Cantidad: ${servicecount}\n\nGracias por confiar en nosotros.`,
+      ).toLocaleDateString()}\n-Nombre:${name}\n Hora: ${hour}\n- Teléfono: ${phone}\n- Servicio: ${service}\n-\n\nGracias por confiar en nosotros.`,
     };
 
     // Enviar el correo
