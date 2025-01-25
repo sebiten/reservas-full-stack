@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     // Opciones del correo
     const mailOptions = {
       from: email,
-      to: process.env.MAIL_RECEIVER_ADDRESS, // Enviar la confirmación al correo del usuario
+      to: "sebdevspace@gmail.com", // Enviar la confirmación al correo del usuario
       subject: `Confirmación de reserva para ${service}`,
       text: `Hola,\n\nTu reserva ha sido confirmada.\n\nDetalles:\n- Fecha: ${new Date(
         date

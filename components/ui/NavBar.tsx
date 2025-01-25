@@ -9,12 +9,12 @@ import {
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
 import { signOut } from "@/app/register/action";
-import { Edit, Home, List, User2Icon } from "lucide-react";
+import { Edit, Home, List, User2Icon, Award } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export async function NavBar({ user }: { user: User | null }) {
   return (
-    <nav className="sticky top-0 z-50 w-full bg-[#1A1A1A]  shadow-md">
+    <nav className="sticky top-0 z-50 w-full bg-[#1A1A1A] shadow-md">
       <div className="container mx-auto flex items-center justify-between px-6 py-2">
         {/* Logo o sección izquierda */}
         <div className="flex items-center space-x-6">
@@ -46,6 +46,14 @@ export async function NavBar({ user }: { user: User | null }) {
                   <Edit size={20} /> Reservar
                 </Button>
               </Link>
+              <Link href="/ranking">
+                <Button
+                  className="flex items-center gap-2 px-4 py-2 text-white bg-[#2C2C2C] hover:bg-[#D4AF37] hover:border-[#D4AF37] border border-[#444444] rounded-lg transition-all"
+                  variant="outline"
+                >
+                  <Award size={20} /> Ranking
+                </Button>
+              </Link>
               <Link href="/perfil">
                 <Button
                   className="flex items-center gap-2 px-4 py-2 text-white bg-[#2C2C2C] hover:bg-[#D4AF37] hover:border-[#D4AF37] border border-[#444444] rounded-lg transition-all"
@@ -57,7 +65,6 @@ export async function NavBar({ user }: { user: User | null }) {
             </>
           )}
         </div>
-
 
         {/* Menú de usuario */}
         <DropdownMenu>
@@ -91,6 +98,14 @@ export async function NavBar({ user }: { user: User | null }) {
                     variant="ghost"
                   >
                     <List size={20} className="mr-2" /> Perfil
+                  </Button>
+                </Link>
+                <Link href="/ranking" className="w-full">
+                  <Button
+                    className="w-full mt-2 justify-start text-gray-300 hover:bg-[#D4AF37] hover:border-[#D4AF37] border border-[#444444] rounded-lg transition-all"
+                    variant="ghost"
+                  >
+                    <Award size={20} className="mr-2" /> Ranking
                   </Button>
                 </Link>
                 <form action={signOut} className="w-full">
@@ -156,6 +171,12 @@ export async function NavBar({ user }: { user: User | null }) {
                 className="block p-2 text-gray-300 hover:bg-[#444444] rounded-lg"
               >
                 <Edit className="inline mr-2" /> Reservar
+              </Link>
+              <Link
+                href="/ranking"
+                className="block p-2 text-gray-300 hover:bg-[#444444] rounded-lg"
+              >
+                <Award className="inline mr-2" /> Ranking
               </Link>
             </DropdownMenuContent>
           </DropdownMenu>

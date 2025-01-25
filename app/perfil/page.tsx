@@ -107,12 +107,30 @@ export default function Page() {
       console.error("Error al cancelar la reserva:", error);
     }
   };
-
   const { user, bookingsData, selectedBooking, loading } = state;
+  // Calculate the count of completed bookings
+  const completedBookingsCount = bookingsData.filter(
+    (booking) => booking.status === "completed"
+  ).length;
+
+  // Define ranking system
+  const getBadge = (count: number) => {
+    if (count >= 15) {
+      return { label: "Cliente VIP", color: "bg-purple-600", src: "/vipBadge.png" };
+    } else if (count >= 10) {
+      return { label: "Cliente Estrella", color: "bg-blue-600", src: "/estrellaBadge.png" };
+    } else if (count >= 5) {
+      return { label: "Cliente Frecuente", color: "bg-green-600", src: "/frecuenteBadge.png" };
+    } else {
+      return { label: "Cliente Nuevo", color: "bg-gray-600", src: "/novatoBadge.png" };
+    }
+  };
+
+  const badge = getBadge(completedBookingsCount);
+
   return (
     <div className="relative min-h-screen w-full mx-auto bg-gradient-to-br from-[#1A1A1A] to-[#2C2C2C] text-gray-200 flex flex-col lg:flex-row">
       {/* Sidebar para Reservas Completadas */}
-
 
       {/* Contenido principal */}
       <div className="flex-1">
@@ -143,10 +161,15 @@ export default function Page() {
                 <h1 className="text-2xl font-semibold text-white">
                   Hola, {user?.user_metadata?.full_name || user?.email || "Usuario"} 👋
                 </h1>
-                <span className="mt-2 bg-[#D4AF37] text-black px-5 py-2 text-sm rounded-sm">
-                  {isFirst ? "¡Es tu primera vez aquí!" : "Cliente recurrente"}
-                </span>
-                <div className="mt-4">
+                <Avatar className="mt-2">
+                  <AvatarImage className="w-20 h-20 object-cover" src={badge.src} />
+
+                </Avatar>
+                <Badge className={`absolute bottom-10 ${badge.color}`}>
+                  {badge.label}
+                </Badge>
+
+                <div className="mt-10">
                   <LogoutButton />
                 </div>
               </>

@@ -71,7 +71,6 @@ export default async function Home() {
                   ¿Listo para un nuevo corte? <br></br>En Barbería Elite tenemos el mejor servicio para brindarte.
                 </p>
               </div>
-
               {/* Acciones principales */}
               <div className="flex justify-center gap-6">
                 <Link href="/reserva">
@@ -85,7 +84,6 @@ export default async function Home() {
                   </Button>
                 </Link>
               </div>
-
               {/* Promoción */}
               <div className="relative w-11/12 text-center mt-6">
                 <div className="absolute inset-0 bg-[url('/bg.webp')] object-center bg-cover  bg-center opacity-10 rounded-lg shadow-md "></div>
