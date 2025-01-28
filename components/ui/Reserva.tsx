@@ -266,7 +266,7 @@ export default function Reserva() {
           {/* Servicio odontológico */}
           <div>
             <label className="block text-sm font-medium text-gray-400">
-              Servicio odontológico
+              Servicio
             </label>
             <Select onValueChange={(value) => setValue("service", value)}>
               <SelectTrigger className="mt-2 w-full p-3 border border-[#444444] rounded-lg bg-[#1A1A1A]">
