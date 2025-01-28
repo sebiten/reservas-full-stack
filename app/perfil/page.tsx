@@ -16,7 +16,6 @@ import { User } from "@supabase/supabase-js";
 import { CancelarReserva } from "./action";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
-import { isFirstTime } from "../admin/actions";
 import { PersonIcon } from "@radix-ui/react-icons";
 interface Booking {
   id: number;
@@ -41,21 +40,6 @@ export default function Page() {
   });
   const [isFirst, setIsFirst] = useState<boolean | null>(null);
   console.log(isFirst);
-
-
-  // Llamada al server action
-  useEffect(() => {
-    const fetchIsFirstTime = async () => {
-      try {
-        const result = await isFirstTime();
-        setIsFirst(result);
-      } catch (error) {
-        console.error("Error obteniendo el estado de isFirstTime:", error);
-      }
-    };
-
-    fetchIsFirstTime();
-  }, []);
 
   const supabase = createClient();
   const fetchUserAndBookings = useCallback(async () => {
