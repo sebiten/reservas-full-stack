@@ -106,9 +106,6 @@ export async function subirReserva({
       );
     }
 
-    const isFirstReservation =
-      !userReservations || userReservations.length === 0;
-
     // Insertar la nueva reserva en la tabla "reservas"
     const { data, error } = await (
       await supabase
