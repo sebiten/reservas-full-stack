@@ -17,6 +17,7 @@ import { CancelarReserva } from "./action";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import Image from "next/image";
 import { PersonIcon } from "@radix-ui/react-icons";
+import { getBadge } from "@/lib/constantes";
 interface Booking {
   id: number;
   service: string;
@@ -95,25 +96,12 @@ export default function Page() {
     (booking) => booking.status === "completed"
   ).length;
 
-  // Define ranking system
-  const getBadge = (count: number) => {
-    if (count >= 15) {
-      return { label: "Cliente VIP", color: "bg-purple-600", src: "/vipBadge.png" };
-    } else if (count >= 10) {
-      return { label: "Cliente Estrella", color: "bg-blue-600", src: "/estrellaBadge.png" };
-    } else if (count >= 5) {
-      return { label: "Cliente Frecuente", color: "bg-green-600", src: "/frecuenteBadge.png" };
-    } else {
-      return { label: "Cliente Nuevo", color: "bg-gray-600", src: "/novatoBadge.png" };
-    }
-  };
 
   const badge = getBadge(completedBookingsCount);
 
   return (
     <div className="relative min-h-screen w-full mx-auto bg-gradient-to-br from-[#1A1A1A] to-[#2C2C2C] text-gray-200 flex flex-col lg:flex-row">
       {/* Sidebar para Reservas Completadas */}
-
       {/* Contenido principal */}
       <div className="flex-1">
         {/* Header de Usuario */}
