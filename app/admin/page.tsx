@@ -2,6 +2,7 @@ import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import React from 'react';
 import { CancelarReservaAdmin, completeReservation } from './actions';
+import { Button } from '@/components/ui/button';
 
 interface Booking {
   id: string;
@@ -59,9 +60,9 @@ export default async function AdminPage() {
                   <tr className="text-left text-sm text-[#D4AF37]">
                     <th className="px-6 py-3 font-medium">Acción</th>
                     <th className="px-6 py-3 font-medium">Usuario</th>
-                    <th className="px-6 py-3 font-medium">Servicio</th>
-                    <th className="px-6 py-3 font-medium">Fecha</th>
                     <th className="px-6 py-3 font-medium">Hora</th>
+                    <th className="px-6 py-3 font-medium">Fecha</th>
+                    <th className="px-6 py-3 font-medium">Servicio</th>
                     <th className="px-6 py-3 font-medium">Estado</th>
                   </tr>
                 </thead>
@@ -71,36 +72,37 @@ export default async function AdminPage() {
                       key={booking.id}
                       className="border-b border-[#444444] hover:bg-[#3A3A3A] transition"
                     >
-                      <td className="px-6 py-4 flex flex-wrap gap-2">
+                      <td className="px-2 py-4 flex flex-wrap gap-4">
                         <form action={completeReservation}>
                           <input type="hidden" name="id" value={booking.id} />
-                          <button
+                          <Button
+
                             type="submit"
                             className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
                           >
                             Completar
-                          </button>
+                          </Button>
                         </form>
                         <form action={CancelarReservaAdmin}>
                           <input type="hidden" name="id" value={booking.id} />
-                          <button
+                          <Button
                             type="submit"
                             className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
                           >
                             Cancelar
-                          </button>
+                          </Button>
                         </form>
                       </td>
                       <td className="px-6 py-4 text-sm">{booking.name}</td>
-                      <td className="px-6 py-4 text-sm">{booking.service}</td>
-                      <td className="px-6 py-4 text-sm">{booking.date}</td>
                       <td className="px-6 py-4 text-sm">{booking.hour}</td>
+                      <td className="px-6 py-4 text-sm">{booking.date}</td>
+                      <td className="px-6 py-4 text-sm">{booking.service}</td>
                       <td
                         className={`px-6 py-4 text-sm font-semibold ${booking.status === "completed"
-                            ? "text-green-400"
-                            : booking.status === "pending"
-                              ? "text-yellow-400"
-                              : "text-gray-400"
+                          ? "text-green-400"
+                          : booking.status === "pending"
+                            ? "text-yellow-400"
+                            : "text-gray-400"
                           }`}
                       >
                         {booking.status === "completed"
@@ -116,7 +118,6 @@ export default async function AdminPage() {
               </table>
             </div>
           </div>
-
           {/* Reservas Completadas */}
           <div className="md:col-span-1">
             <h1 className="text-2xl font-semibold text-center text-[#D4AF37] mb-4">
@@ -140,10 +141,10 @@ export default async function AdminPage() {
                       <p className="text-gray-400 text-sm">Hora: {booking.hour}</p>
                       <p
                         className={`text-sm font-semibold ${booking.status === "completed"
-                            ? "text-green-400"
-                            : booking.status === "pending"
-                              ? "text-yellow-400"
-                              : "text-gray-400"
+                          ? "text-green-400"
+                          : booking.status === "pending"
+                            ? "text-yellow-400"
+                            : "text-gray-400"
                           }`}
                       >
                         {booking.status === "completed"

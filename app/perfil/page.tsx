@@ -38,8 +38,7 @@ export default function Page() {
     selectedBooking: null,
     loading: true,
   });
-  const [isFirst, setIsFirst] = useState<boolean | null>(null);
-  console.log(isFirst);
+
 
   const supabase = createClient();
   const fetchUserAndBookings = useCallback(async () => {
@@ -53,7 +52,6 @@ export default function Page() {
           .eq("email", user.email);
 
         if (error) throw new Error(error.message);
-
 
         setState({
           user,
