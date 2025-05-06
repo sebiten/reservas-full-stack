@@ -16,7 +16,7 @@ import { obtenerReservas, subirReserva } from "@/app/perfil/action";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "./button";
 import { useToast } from "@/hooks/use-toast";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 // Esquema de validación con zod
 export interface Reserva {
   date: Date;
@@ -30,10 +30,16 @@ const mailFormSchema = z.object({
   date: z.string().min(1, "La fecha es obligatoria"),
   name: z
     .string()
-    .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, "El nombre solo puede contener letras y espacios."),
+    .regex(
+      /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
+      "El nombre solo puede contener letras y espacios."
+    ),
   phone: z
     .string()
-    .regex(/^\d{9,}$/, "El número de teléfono debe tener al menos 9 dígitos y solo números."),
+    .regex(
+      /^\d{9,}$/,
+      "El número de teléfono debe tener al menos 9 dígitos y solo números."
+    ),
   service: z.string().min(1, "Seleccionar un servicio es obligatorio"),
   hour: z.string().min(1, "Seleccionar un horario es obligatorio"),
 });
@@ -47,7 +53,7 @@ export default function Reserva() {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [disabledHours, setDisabledHours] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
   // Hook del formulario
   const {
     register,
@@ -113,66 +119,26 @@ export default function Reserva() {
         return;
       }
 
-      // Convertir `data.date` en un objeto Date y asignar el correo del usuario`
+      // Preparar los datos de la reserva
       const reservaData = {
-        date: new Date(data.date), // Convertimos `string` a `Date`
+        date: new Date(data.date),
         name: data.name,
-        email: user.user.email, // Correo del usuario autenticado
+        email: user.user.email,
         phone: data.phone,
         hour: data.hour,
         service: data.service,
       };
 
-      // Subir la reserva a la base de datos desde el server action
+      // Subir la reserva
       const response = await subirReserva(reservaData);
       if (response.success) {
-        // Notificar al usuario sobre el éxito
         toast({
           title: "Reserva creada exitosamente 🎉",
           description: `Tu turno está reservado para ${data.date} a las ${data.hour}.`,
           variant: "default",
         });
-
-        // Intentar enviar el correo de confirmación
-        try {
-          const emailResponse = await fetch("/api/send-email", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              email: user.user.email,
-              name: data.name,
-              date: data.date,
-              hour: data.hour,
-              phone: data.phone,
-              service: data.service,
-            }),
-          });
-
-          if (emailResponse.ok) {
-            toast({
-              title: "Correo enviado ✉️",
-              description: "Se envió la confirmación de la reserva a tu correo.✅",
-              variant: "default",
-            });
-            router.push("/perfil")
-          } else {
-            const errorData = await emailResponse.json();
-            toast({
-              title: "Error al enviar el correo",
-              description: errorData.error || "No se pudo enviar el correo.",
-              variant: "destructive",
-            });
-          }
-        } catch (emailError) {
-          console.error("Error al enviar el correo:", emailError);
-          toast({
-            title: "Error inesperado",
-            description: "No se pudo enviar el correo de confirmación.",
-            variant: "destructive",
-          });
-        }
+        router.push("/perfil");
       } else {
-        // Notificar al usuario sobre un error al crear la reserva
         toast({
           title: "Error al crear la reserva",
           description: response.message || "No se pudo procesar tu reserva.",
@@ -183,14 +149,14 @@ export default function Reserva() {
       console.error("Error al procesar la reserva:", error);
       toast({
         title: "Error inesperado",
-        description: "Hubo un problema al procesar tu reserva. Inténtalo de nuevo.",
+        description:
+          "Hubo un problema al procesar tu reserva. Inténtalo de nuevo.",
         variant: "destructive",
       });
     } finally {
-      setIsLoading(false); // Finalizamos la carga
+      setIsLoading(false);
     }
   };
-
 
   return (
     <div className="flex flex-col items-center w-full h-full justify-center px-4 sm:px-6 lg:px-8 bg-[#1A1A1A] text-gray-200">

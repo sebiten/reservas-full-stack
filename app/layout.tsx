@@ -20,8 +20,8 @@ export const metadata: Metadata = {
   title: "Barberia Elite",
   description: "Apliacion de reservas de turnos.",
   icons: {
-    icon: "/logopng.png"
-  }
+    icon: "/logopng.png",
+  },
 };
 
 export default async function RootLayout({
@@ -35,6 +35,7 @@ export default async function RootLayout({
     data: { user },
   } = await (await supabase).auth.getUser();
 
+
   return (
     <html className="background" lang="en">
       {/* <head>
@@ -43,10 +44,8 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
-        <NavBar user={user!} />
-        <main>
-          {children}
-        </main>
+        <NavBar user={user!}  />
+        <main>{children}</main>
         <Toaster />
       </body>
     </html>
